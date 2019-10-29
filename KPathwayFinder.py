@@ -3,10 +3,51 @@ import csv
 import requests
 
 
+def formatPathway(pathwayCode):
+# Function to format properly pathways from KEGG
+# Get ko code, name and class
+
+    # Initialize KEGG searcher
+    pwSearch = KEGG()
+
+    # Get answer
+    result = pwSearch.get(pathwayCode)
+
+    # If Kegg return only an int, the code is incorrect or pathway does'nt exist (?)
+    if type(result) is int:
+        pwFormat = False
+    else:
+        # Parse result in a dictionnary
+        dictResult = pwSearch.parse(result)
+        # Define a default value
+        defaultValue = 'NA'
+
+        # If name exist as a key in dict 
+        if 'NAME' in dictResult.keys():
+            name = dictResult['NAME'][0]
+        else:
+            # else name get defaultValue
+            name = defaultValue
+
+        # If class exist as a key in the dict    
+        if 'CLASS' in dictResult.keys():
+            pwClass = dictResult['CLASS']
+        # Else class get the defaultValue
+        else:
+            pwClass = defaultValue
+
+    # Finally format the pathway string
+    pwFormat = f"{pathwayCode};{name};{pwClass}"
+    print(pwFormat)
+
+    return pwFormat
+
 
 def getInfo(gene):
 
     keggSearch = KEGG()
+    ignoredPathWay = ['ko01100']
+
 
     result = keggSearch.get(gene)
     if type(result) is int:
@@ -15,24 +56,16 @@ def getInfo(gene):
     else:
 
         dictResult = keggSearch.parse(result)
-        defaultValue = 'EMPTY'
+        defaultValue = 'NA'
         resultList = []
 
-        #print(dictResult['CLASS'])
-        print(dictResult['PATHWAY'])
+        koReferences = list(dictResult['PATHWAY'].keys())
+        for ko in koReferences:
+            # Ignore 'Metabolic Pathway', don't make any sense !
+            if ko not in ignoredPathWay:
+                formatPathway(ko)
 
-        resultList.append(gene)
-        if dictResult['DEFINITION']:
-            resultList.append(dictResult['DEFINITION'])
-        else:
-            print(f"[!] Missing definition for {gene}")
-            resultList.append(defaultValue)
 
-        if dictResult['PATHWAY']:
-            resultList.append(dictResult['PATHWAY'])
-        else:
-            print(f"[!] Missing pathway for {gene}")
-            resultList.append(emptyValue)
 
     return resultList
 
@@ -42,9 +75,9 @@ def getInfo(gene):
 # -------------------- main --------------------
 
 # List of gene from file, in a list
-with open(r'/home/scratch/Downloads/source.txt', 'r') as inputFile:
+#with open(r'/home/scratch/Downloads/source.txt', 'r') as inputFile:
 
-    inputList = inputFile.read().splitlines()
+    #inputList = inputFile.read().splitlines()
 
 
 # Define headers of CSV file
@@ -52,7 +85,9 @@ with open(r'/home/scratch/Downloads/source.txt', 'r') as inputFile:
 # File where write result
 outputFile = r'/home/scratch/Downloads/result.txt'
 
-print(getInfo('K00010'))
+getInfo('K00010')
+
+#formatPathway('ko01100')
 
 """
 with open(outputFile,'w') as outputStream:
@@ -74,6 +109,4 @@ with open(outputFile,'w') as outputStream:
     
 """
 
-
-liste = ['toto']
 
