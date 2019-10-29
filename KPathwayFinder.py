@@ -17,7 +17,7 @@ def formatPathway(pathwayCode):
     if type(result) is int:
         pwFormat = False
     else:
-        # Parse result in a dictionnary
+        # Parse result in a dictionnary format
         dictResult = pwSearch.parse(result)
         # Define a default value
         defaultValue = 'NA'
@@ -40,27 +40,38 @@ def formatPathway(pathwayCode):
 
     # Finally format the pathway string
     pwFormat = f"{pathwayCode};{name};{pwClass}"
-    print(pwFormat)
 
     return pwFormat
 
 
 def getInfo(gene):
+# Function to get info about specific enzyme
 
+    # Initialize KEGG searcher
     keggSearch = KEGG()
+    # List of ignored pathway if needed
+    # Can be empty but don't remove it
     ignoredPathWay = ['ko01100']
 
-
+    # Get result from search
     result = keggSearch.get(gene)
+    # If Kegg return only an int, the code is incorrect or pathway does'nt exist (?)
     if type(result) is int:
         return False
 
     else:
-
+        # Parse result in a dictionnary format
         dictResult = keggSearch.parse(result)
+        # Define a defaultValue if a value is missing
         defaultValue = 'NA'
+        # Initialize a list
         resultList = []
 
+        print(dictResult)
+        exit()
+
+
+        # Get ko pathways from dict
         koReferences = list(dictResult['PATHWAY'].keys())
         for ko in koReferences:
             # Ignore 'Metabolic Pathway', don't make any sense !
