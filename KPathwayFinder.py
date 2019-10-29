@@ -3,7 +3,7 @@ import csv
 import requests
 
 
-def formatPathway(pathwayCode, prefix):
+def formatPathway(pathwayCode):
 # Function to format properly pathways from KEGG
 # Get ko code, name and class
 
@@ -20,7 +20,7 @@ def formatPathway(pathwayCode, prefix):
         # Parse result in a dictionnary format
         dictResult = pwSearch.parse(result)
         # Define a default value
-        defaultValue = 'NA'
+        #defaultValue = 'NA'
 
         # If name exist as a key in dict 
         # KEGG parser give a list for the name
@@ -29,23 +29,25 @@ def formatPathway(pathwayCode, prefix):
             name = dictResult['NAME'][0]
         else:
             # else name get defaultValue
-            name = defaultValue
+            name = 'NONAME'
 
         # If class exist as a key in the dict    
         if 'CLASS' in dictResult.keys():
             pwClass = dictResult['CLASS']
         # Else class get the defaultValue
         else:
-            pwClass = defaultValue
+            pwClass = 'NOCLASS'
 
     # Finally format the pathway string
-    pwFormat = f"{prefix},{pathwayCode},{name},{pwClass}"
+    pwFormat = f"{pathwayCode};{name};{pwClass}"
 
     return pwFormat
 
 
 def getInfo(enzyme):
 # Function to get info about specific enzyme
+
+    print(f"[+] Searching for {enzyme} enzyme")
 
     # Initialize KEGG searcher
     keggSearch = KEGG()
@@ -65,7 +67,7 @@ def getInfo(enzyme):
         # Define a defaultValue if a value is missing
         defaultValue = 'NA'
         # Initialize a list
-        prefixList = []
+        prefixList = ['']
 
         # Add enzyme name to prefix in a list
         
@@ -78,33 +80,42 @@ def getInfo(enzyme):
             prefixList.append(dictResult['NAME'][0])
         # Else set name with the default value
         else:
-            prefixList.append(defaultValue)
+            prefixList.append('NONAME')
 
         # If definition exist as a dict key
         if 'DEFINITION' in dictResult.keys():
             prefixList.append(dictResult['DEFINITION'])
         # Else set default value instead
         else:
-            prefixList.append(defaultValue)
+            prefixList.append('NODEFINITION')
         
         # Finally build prefix as a string, separated by ,
-        prefixStr = ','.join(prefixList)
+        prefixStr = ';'.join(prefixList)
         
         # Get ko pathways from dict
         koReferences = list(dictResult['PATHWAY'].keys())
         finalList = []
+
+#
+# ------------------ Loop to add ko pathways
+#
         # If pathways exist
         if koReferences:
             # Loop to get each pathway ko code
             for ko in koReferences:
-
                 # Ignore 'Metabolic Pathway', don't make any sense !
                 if ko not in ignoredPathWay:
+                    print(f"  [-] Need information about {ko} pathway")
                     # Call formatPathway function
-                    finalList.append(formatPathway(ko, prefixStr))
+                    suffixStr = formatPathway(ko)
+                    finalStr = f"{prefixStr} > {suffixStr}"
+                    finalList.append(finalStr)
+                else:
+                    print(f"  [!] Ignored pathway : {ko}")
+
         # Else if pathways are missing           
         else:
-            finalStr = f"{prefixStr},NA"
+            finalStr = f"{prefixStr} > NOPATHWAY"
             finalList.append(finalStr)
 
 
@@ -116,17 +127,22 @@ def getInfo(enzyme):
 # -------------------- main --------------------
 
 # List of gene from file, in a list
-#with open(r'/home/scratch/Downloads/source.txt', 'r') as inputFile:
+with open(r'/home/scratch/Downloads/source.txt', 'r') as inputFile:
 
-    #inputList = inputFile.read().splitlines()
+    inputList = inputFile.read().splitlines()
 
 
 # Define headers of CSV file
 #header = ['Entry', 'Definition', 'Pathway']
 # File where write result
 outputFile = r'/home/scratch/Downloads/result.txt'
+masterList = []
 
-getInfo('K00010')
+for enzyme in inputList:
+    for entry in getInfo(enzyme):
+        masterList.append(entry)
+        print(f"-   {entry}")
+
 
 #formatPathway('ko01100')
 
