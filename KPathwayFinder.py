@@ -44,7 +44,7 @@ def formatPathway(pathwayCode):
     return pwFormat
 
 
-def getInfo(gene):
+def getInfo(enzyme):
 # Function to get info about specific enzyme
 
     # Initialize KEGG searcher
@@ -54,7 +54,7 @@ def getInfo(gene):
     ignoredPathWay = ['ko01100']
 
     # Get result from search
-    result = keggSearch.get(gene)
+    result = keggSearch.get(enzyme)
     # If Kegg return only an int, the code is incorrect or pathway does'nt exist (?)
     if type(result) is int:
         return False
@@ -65,12 +65,34 @@ def getInfo(gene):
         # Define a defaultValue if a value is missing
         defaultValue = 'NA'
         # Initialize a list
-        resultList = []
+        prefixList = []
 
-        print(dictResult)
-        exit()
+        # Add enzyme name to prefix in a list
+        
+        prefixList.append(enzyme)
+        
+        # If name exist as a dict key
+        # KEGG parser give a list for the name
+        # Assume that the first name is the good one
+        if 'NAME' in dictResult.keys():
+            prefixList.append(dictResult['NAME'][0])
+        # Else set name with the default value
+        else:
+            prefixList.append(defaultValue)
+
+        # If definition exist as a dict key
+        if 'DEFINITION' in dictResult.keys():
+            prefixList.append(dictResult['DEFINITION'])
+        # Else set default value instead
+        else:
+            prefixList.append(defaultValue)
+        
+        # Finally build prefix as a string, separated by ,
+        prefixStr = ','.join(prefixList)
+        
 
 
+        exit()        
         # Get ko pathways from dict
         koReferences = list(dictResult['PATHWAY'].keys())
         for ko in koReferences:
@@ -102,24 +124,5 @@ getInfo('K00010')
 
 #formatPathway('ko01100')
 
-"""
-with open(outputFile,'w') as outputStream:
-    fileWriter = csv.writer(outputStream, delimiter=',')
-
-    for entry in inputList:
-        
-        print(f"[?] Searching about {entry}")
-        result = getInfo(entry)
-
-        if result is not False:
-            print(f"[+] Write infos in {outputFile}\n")
-            fileWriter.writerow(result)
-        else:
-            print(f"\n[!] Something wrong when trying to search {entry}")
-            print(f"[!] This entry will be ignored\n")
-            continue
-
-    
-"""
 
 
