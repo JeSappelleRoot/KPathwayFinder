@@ -23,6 +23,8 @@ def formatPathway(pathwayCode):
         defaultValue = 'NA'
 
         # If name exist as a key in dict 
+        # KEGG parser give a list for the name
+        # Assume that the first name is the good one
         if 'NAME' in dictResult.keys():
             name = dictResult['NAME'][0]
         else:
