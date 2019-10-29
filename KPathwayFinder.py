@@ -3,7 +3,7 @@ import csv
 import requests
 
 
-def formatPathway(pathwayCode):
+def formatPathway(pathwayCode, prefix):
 # Function to format properly pathways from KEGG
 # Get ko code, name and class
 
@@ -39,7 +39,7 @@ def formatPathway(pathwayCode):
             pwClass = defaultValue
 
     # Finally format the pathway string
-    pwFormat = f"{pathwayCode};{name};{pwClass}"
+    pwFormat = f"{prefix},{pathwayCode},{name},{pwClass}"
 
     return pwFormat
 
@@ -90,19 +90,25 @@ def getInfo(enzyme):
         # Finally build prefix as a string, separated by ,
         prefixStr = ','.join(prefixList)
         
-
-
-        exit()        
         # Get ko pathways from dict
         koReferences = list(dictResult['PATHWAY'].keys())
-        for ko in koReferences:
-            # Ignore 'Metabolic Pathway', don't make any sense !
-            if ko not in ignoredPathWay:
-                formatPathway(ko)
+        finalList = []
+        # If pathways exist
+        if koReferences:
+            # Loop to get each pathway ko code
+            for ko in koReferences:
+
+                # Ignore 'Metabolic Pathway', don't make any sense !
+                if ko not in ignoredPathWay:
+                    # Call formatPathway function
+                    finalList.append(formatPathway(ko, prefixStr))
+        # Else if pathways are missing           
+        else:
+            finalStr = f"{prefixStr},NA"
+            finalList.append(finalStr)
 
 
-
-    return resultList
+    return finalList
 
 
 
