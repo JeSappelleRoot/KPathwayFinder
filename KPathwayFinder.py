@@ -1,4 +1,5 @@
 from bioservices.kegg import KEGG
+import csv
 
 
 
@@ -89,6 +90,7 @@ def pathwayInfo(code):
     # Add code at the begining of the list
     dictResult = kSearcher.parse(result)
 
+
     # Initialize an empty list
     pathwayList = []
 
@@ -124,7 +126,7 @@ def makeCSVHeader(n):
     headerSuffix = ''
     # Loop to concatenate header about N pathway (code, name and class)
     for i in range(n):
-        headerSuffix = headerSuffix + (f"pathway{i + 1}_code, pathway{i + 1}_name, pathway{i + 1}_class,")
+        headerSuffix = headerSuffix + (f"pathway{i + 1}_code,pathway{i + 1}_name,pathway{i + 1}_class,")
 
     # Format the final header
     csvHeader = f"{headerPrefix},{headerSuffix}"
@@ -142,6 +144,7 @@ def makeCSVHeader(n):
 
 
 source = r'/home/scratch/Downloads/source.txt'
+output = r'/home/scratch/Downloads/output.csv'
 sourceList = ['K00009','K00012']
 # List with ignored pathways, can be empty
 ignoredPathway = ['ko01100']
@@ -187,12 +190,14 @@ nbMaxOccurence = codeList.count(codeMax)
 # - 1 because codeMax include the enzyme code itsel (enzyme + pathwayN)
 # Need only the number of pathway (represented by a line in the list)
 csvHeader = makeCSVHeader(nbMaxOccurence - 1)
-
+# Remove last comma
+csvHeader = csvHeader[:-1]
 
 # Define the last list, which contain [[enzyme], [pathway1], [pathway2], [pathwayN]] 
 masterList = []
 # Loop on the code gived by the input file
 for code in sourceList:
+    print(f"[+] Merging pathways from {code}")
     # Initialize a list with a empty value on index 0
     tmpList = ['']
     # Loop on list in the double list enzymeList
@@ -204,10 +209,19 @@ for code in sourceList:
             # First position of list always take from the begining to the separator symbol 
             tmpList[0] = liste[0:sepPosition]
             # And always add successively from the separator symbol to the end of the line
-            tmpList.append(liste[sepPosition+1:-1])
+            tmpList.append(liste[sepPosition + 1:])
     # Add the temp list to the final master list
     masterList.append(tmpList)
 
-
 print(masterList)
 
+"""
+
+with open(output, 'w') as fileStream:
+    writer = csv.writer(fileStream, delimiter=',')
+
+    for liste in masterList:
+        for element in sum(liste, []):
+            print(element)
+
+"""
