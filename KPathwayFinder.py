@@ -13,6 +13,7 @@ def enzymeInfo(code):
     ignoredPathway = ['ko01100']
 
     # Get result and parse it in a dictionnary
+    print(f"[+] Get info about enzyme {code}")
     result = kSearch.get(code)
     dictResult = kSearch.parse(result)
     
@@ -46,12 +47,18 @@ def enzymeInfo(code):
 
     for pathway in pathwayList:
         if pathway not in ignoredPathway:
+            print(f"  [-] Get info about {pathway} pathway")
             suffixList = pathwayInfo(pathway)
+        else:
+            print(f"  [!] Ignored pathway : {pathway}")
 
         finalList.append(prefixList + suffixList)
 
     
     return finalList
+
+
+# -------------------------------------------------------------------------------------------------
 
 
 def pathwayInfo(code):
@@ -87,7 +94,9 @@ def pathwayInfo(code):
 
 
 
-
+# -------------------------------------------------------------------------------------------------
+# --------------------------------------------- Main ----------------------------------------------
+# -------------------------------------------------------------------------------------------------
 
 
 
