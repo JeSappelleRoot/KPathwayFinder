@@ -1,5 +1,28 @@
-from bioservices.kegg import KEGG
 import csv
+import argparse
+from bioservices.kegg import KEGG
+
+def displayBanner():
+
+    print(r"""
+
+
+  _  _______      _   _                        ______ _           _           
+ | |/ /  __ \    | | | |                      |  ____(_)         | |          
+ | ' /| |__) |_ _| |_| |____      ____ _ _   _| |__   _ _ __   __| | ___ _ __ 
+ |  < |  ___/ _` | __| '_ \ \ /\ / / _` | | | |  __| | | '_ \ / _` |/ _ \ '__|
+ | . \| |  | (_| | |_| | | \ V  V / (_| | |_| | |    | | | | | (_| |  __/ |   
+ |_|\_\_|   \__,_|\__|_| |_|\_/\_/ \__,_|\__, |_|    |_|_| |_|\__,_|\___|_|   
+                                          __/ |                               
+                                         |___/                                
+                              
+    """)
+
+
+    return
+
+
+
 
 
 
@@ -139,13 +162,52 @@ def makeCSVHeader(n):
 # --------------------------------------------- Main ----------------------------------------------
 # -------------------------------------------------------------------------------------------------
 
+parser = argparse.ArgumentParser(
+
+formatter_class=argparse.RawDescriptionHelpFormatter,
+
+description="""
+KPathwayFinder is designed : \n
+-from enzyme code (e.g K00001) get all pathways \n
+-recover info about enzyme (code, name, definition) \n
+-recover information about each pathway (code, name, class) \n
+-concatenate each pathway for each enzyme (enzyme1 : pathway1, pathway2, pathway3...) \n
+"""
+)
+
+
+parser.add_argument('--input', help='The input file, which contain enzyme codes')
+parser.add_argument('--output', help='The output file, which contain result in CSV format')
+parser.add_argument('-v', help='Increase verbosity')
+
+# If no arguments given in command line
+# Print help section
+if len(sys.argv) == 1:
+    parser.print_help(sys.stderr)
+    exit()
+
+
+args = parser.parse_args()
+print(args)
+
+
+displayBanner()
 
 
 
 
-source = r'/home/scratch/Downloads/source.txt'
+
+sourceFile = r'/home/scratch/Downloads/source.txt'
+
+# Read input file with .read().splitlines to avoid \n at end of each lines
+with open(sourceFile, 'r') as fileStream:
+    sourceList = fileStream.read().splitlines()
+
+exit()
+
+
 output = r'/home/scratch/Downloads/output.csv'
-sourceList = ['K00009','K00012']
+#sourceList = ['K00009','K00012']
 # List with ignored pathways, can be empty
 ignoredPathway = ['ko01100']
 
