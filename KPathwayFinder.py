@@ -83,8 +83,13 @@ source = r'/home/scratch/Downloads/source.txt'
 
 
 enzymeList = []
+
 sourceList = ['K00001', 'K00002', 'K00003']
 for enzyme in sourceList:
-    enzymeList.append(enzymeInfo(enzyme))
+    for liste in enzymeInfo(enzyme):
+        enzymeList.append(liste)
 
+
+
+print(enzymeList)
 
