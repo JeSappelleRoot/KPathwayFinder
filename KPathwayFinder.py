@@ -57,11 +57,14 @@ def enzymeInfo(code, ignored,verbosity):
             if pathway not in ignored:
                 print(f"  [-] Get info about {pathway} pathway")
                 suffixList = pathwayInfo(pathway)
+
+                finalList.append(prefixList + suffixList)
+                
             else:
                 print(f"  [!] Ignored pathway : {pathway}")
 
 
-            finalList.append(prefixList + suffixList)
+            
 
         
         return finalList
@@ -139,7 +142,7 @@ def makeCSVHeader(n):
 
 
 source = r'/home/scratch/Downloads/source.txt'
-sourceList = ['K00001','K00003']
+sourceList = ['K00009','K00012']
 # List with ignored pathways, can be empty
 ignoredPathway = ['ko01100']
 
@@ -163,6 +166,7 @@ for enzyme in sourceList:
         for liste in aboutEnzyme:
             enzymeList.append(liste)
 
+
 #
 # Formating the main list enzymeList (double list)
 #
@@ -185,11 +189,8 @@ nbMaxOccurence = codeList.count(codeMax)
 csvHeader = makeCSVHeader(nbMaxOccurence - 1)
 
 
-
-
-
-
-
-
-
-
+headerSet = {}
+pathwayList = []
+for liste in enzymeList:
+    separatorPosition = liste.index('>')
+    print(liste)
