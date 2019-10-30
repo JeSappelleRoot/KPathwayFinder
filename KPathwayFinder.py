@@ -318,15 +318,31 @@ for code in sourceList:
 # Write in file in CSV style (comma separated)
 #
 
-
 # With open statement to write into output file
 with open(outputFile, 'w') as fileStream:
     # Specify CSV delimiter file
     writer = csv.writer(fileStream, delimiter=',')
     # Write CSV header (with a split)
     writer.writerow(csvHeader.split(','))
+
+    # Get csvHeader's lenght
+    maxLenght = len(csvHeader.split(','))
     # For each list in masterList, remove sub lists with sum
     # and write the entire line in CSV file
     for liste in masterList:
-        writer.writerow(sum(liste,[]))
+        # If lenght of list is lower than csvHeader lenght
+        if len(sum(liste, [])) < maxLenght:
+            # Find the number of missing values
+            nbMissingValues = maxLenght - len(sum(liste, []))
+            # Add the list in the raw
+            row = sum(liste,[])
+            # And for the number of missing values
+            for i in range(nbMissingValues):
+                # Add 'NA
+                row.append('NA')
+        # Else, just add the entire list as a CSV row
+        else:
+            row = sum(liste,[])
 
+
+        writer.writerow(row)
