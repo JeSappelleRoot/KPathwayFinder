@@ -61,17 +61,17 @@ def enzymeInfo(code, ignored,verbosity):
         # Add code at the begining of the list
         prefixList.append(code)
 
-        # If name is present as key, else 'NONAME' insted
+        # If name is present as key, else 'NA' insted
         if 'NAME' in dictResult.keys():
             prefixList.append(dictResult['NAME'])
         else:
-            prefixList.append('NONAME')
+            prefixList.append('NA')
 
-        # If definition is present as key, else 'NODEFINITION' insted
+        # If definition is present as key, else 'NA' insted
         if 'DEFINITION' in dictResult.keys():
             prefixList.append(dictResult['DEFINITION'])
         else:
-            prefixList.append('NODEFINITION')
+            prefixList.append('NA')
 
 
         # If pathway exist as a key in result
@@ -104,7 +104,7 @@ def enzymeInfo(code, ignored,verbosity):
             # Display a alert message
             print(f"[!] No pathway detected for enzyme {code}\n")
             # Artificially create pathway entry, but empty 
-            suffixList = ['>', 'NOPATHWAY']
+            suffixList = ['>', 'NA']
             # Create finalList to concatene prefix and suffix
             finalList.append(prefixList + suffixList)
 
@@ -138,18 +138,18 @@ def pathwayInfo(code):
     # Add separator
     pathwayList.append(pathwaySeparator)
 
-    # If name exist as a key in dictionnary, else 'NONAME' insted
+    # If name exist as a key in dictionnary, else 'NA' insted
     pathwayList.append(code)
     if 'NAME' in dictResult.keys():
         pathwayList.append(dictResult['NAME'][0])
     else:
-        pathwayList.append('NONAME')
+        pathwayList.append('NA')
 
-    # If class exist as a key in dictionnary, else 'NOCLASS' instead
+    # If class exist as a key in dictionnary, else 'NA' instead
     if 'CLASS' in dictResult.keys():
         pathwayList.append(dictResult['CLASS'])
     else:
-        pathwayList.append('NOCLASS')
+        pathwayList.append('NA')
 
 
     return pathwayList
