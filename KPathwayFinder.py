@@ -1,8 +1,11 @@
 import csv
 import argparse
+from os import path, sys
 from bioservices.kegg import KEGG
 
 def displayBanner():
+# Function to add a simple banner in your boring dull terminal
+
 
     print(r"""
 
@@ -162,57 +165,73 @@ def makeCSVHeader(n):
 # --------------------------------------------- Main ----------------------------------------------
 # -------------------------------------------------------------------------------------------------
 
+# Initialize a parser for command line
 parser = argparse.ArgumentParser(
 
 formatter_class=argparse.RawDescriptionHelpFormatter,
-
+# Add a brief description
 description="""
 KPathwayFinder is designed : \n
--from enzyme code (e.g K00001) get all pathways \n
--recover info about enzyme (code, name, definition) \n
--recover information about each pathway (code, name, class) \n
--concatenate each pathway for each enzyme (enzyme1 : pathway1, pathway2, pathway3...) \n
+-from enzyme code (e.g K00001) get all pathways
+-recover info about enzyme (code, name, definition)
+-recover information about each pathway (code, name, class)
+-concatenate each pathway for each enzyme (enzyme1 : pathway1, pathway2, pathway3...)
 """
 )
 
+# Add arguments for command lin
+parser.add_argument('--input', help='The input file, which contain enzyme codes', required=True)
+parser.add_argument('--output', help='The output file, in CSV style (comma separated)', required=True)
+parser.add_argument('-v', help='Increase verbosity', action='store_true', default=False)
 
-parser.add_argument('--input', help='The input file, which contain enzyme codes')
-parser.add_argument('--output', help='The output file, which contain result in CSV format')
-parser.add_argument('-v', help='Increase verbosity')
-
-# If no arguments given in command line
-# Print help section
-if len(sys.argv) == 1:
-    parser.print_help(sys.stderr)
-    exit()
-
-
-args = parser.parse_args()
-print(args)
-
-
+# With a banner, it's always better ! 
 displayBanner()
 
+# If number of arguments = 1, print help and exit
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit()
+
+# Parse arguments
+args = parser.parse_args()
+
+# Set input/output file argument
+inputFile = args.input
+outputFile = args.output
+# Set verbosity argument, used by KEGG() object
+v = args.v
+
+# Check if input file exist
+if not path.isfile(inputFile):
+    print(f"[!] Input file doesn't exist, check your path : ")
+    print(f"{inputFile}")
+    exit()
+
+# Check if output file is not a existant directory
+elif path.isdir(outputFile):
+    print(f"[!] Output file is not valid, it refer to an existant directory : ")
+    print(f"{outputFile}")
+    exit()   
 
 
+#
+# Begining of the script
+#
 
 
-sourceFile = r'/home/scratch/Downloads/source.txt'
+#############################################################
+#MODIFY THIS VALUE TO IGNORE SPECIFIC PATHWAY (CAN BE EMPTY)#
+# List with ignored pathways                                #
+ignoredPathway = ['ko01100']                                #
+#                                                           #
+#############################################################
+
+
 
 # Read input file with .read().splitlines to avoid \n at end of each lines
-with open(sourceFile, 'r') as fileStream:
+with open(inputFile, 'r') as fileStream:
     sourceList = fileStream.read().splitlines()
 
-exit()
-
-
-output = r'/home/scratch/Downloads/output.csv'
-#sourceList = ['K00009','K00012']
-# List with ignored pathways, can be empty
-ignoredPathway = ['ko01100']
-
-# Seet verbosity of KEGG searcher
-v = False
 # Initialize the main list, wich contains other list about enzyme + pathways
 enzymeList = []
 
@@ -255,6 +274,10 @@ csvHeader = makeCSVHeader(nbMaxOccurence)
 # Remove last comma
 csvHeader = csvHeader[:-1]
 
+#
+# Concatenate each pathway with the relative enzyme
+#
+
 # Define the last list, which contain [[enzyme], [pathway1], [pathway2], [pathwayN]] 
 masterList = []
 # Loop on the code gived by the input file
@@ -275,6 +298,10 @@ for code in sourceList:
     # Add the temp list to the final master list
     masterList.append(tmpList)
 
+
+#
+# Write in file in CSV style (comma separated)
+#
 
 # With open statement to write into output file
 with open(output, 'w') as fileStream:
