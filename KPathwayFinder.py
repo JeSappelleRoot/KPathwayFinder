@@ -40,13 +40,8 @@ def enzymeInfo(code, ignored,verbosity):
     # Intialize KEGG searcher
     kSearch = KEGG(verbose=verbosity)
 
-
-
     # Get result and parse it in a dictionnary
     print(f"[+] Get info about enzyme {code}")
-
-
-    
     result = kSearch.get(code)
 
     if type(result) is int:
@@ -63,7 +58,11 @@ def enzymeInfo(code, ignored,verbosity):
 
         # If name is present as key, else 'NA' insted
         if 'NAME' in dictResult.keys():
-            prefixList.append(dictResult['NAME'])
+            #prefixList.append(dictResult['NAME'])
+            # Convert names from list into a string
+            # with strop '[]' part, and replace initial separator , by ;
+            namesStr = str(dictResult['NAME']).strip("'[]'").replace(',',';')
+            prefixList.append(namesStr)
         else:
             prefixList.append('NA')
 
