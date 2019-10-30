@@ -189,8 +189,4 @@ nbMaxOccurence = codeList.count(codeMax)
 csvHeader = makeCSVHeader(nbMaxOccurence - 1)
 
 
-headerSet = {}
-pathwayList = []
-for liste in enzymeList:
-    separatorPosition = liste.index('>')
-    print(liste)
+    
