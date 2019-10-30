@@ -60,6 +60,7 @@ def enzymeInfo(code, ignored,verbosity):
             else:
                 print(f"  [!] Ignored pathway : {pathway}")
 
+
             finalList.append(prefixList + suffixList)
 
         
@@ -72,6 +73,10 @@ def enzymeInfo(code, ignored,verbosity):
 def pathwayInfo(code):
 # Function to get info about a pathway, from the code
 
+    # Symbol to separate enzyme properties (code, name, definition) to the pathway part
+    # Used at the end, when formatting enzyme_properties, pathway1, pathway2, pathway3...pathwayN
+    pathwaySeparator = '>'
+
 
     # Intialize searcher
     kSearcher = KEGG()
@@ -83,6 +88,9 @@ def pathwayInfo(code):
 
     # Initialize an empty list
     pathwayList = []
+
+    # Add separator
+    pathwayList.append(pathwaySeparator)
 
     # If name exist as a key in dictionnary, else 'NONAME' insted
     pathwayList.append(code)
@@ -105,15 +113,17 @@ def pathwayInfo(code):
 
 
 def makeCSVHeader(n):
-
+# Function to concantenate pathway to make a CSV header file
+    print(f"\n[+] Prepare CSV header for maximum {n} pathway\n")
+    # Define a prefix for the enzyme (code, name and definition)
     headerPrefix = 'enzyme_code,enzyme_name,enzyme_definition'
-
+    # Empty header suffix
     headerSuffix = ''
-
+    # Loop to concatenate header about N pathway (code, name and class)
     for i in range(n):
         headerSuffix = headerSuffix + (f"pathway{i + 1}_code, pathway{i + 1}_name, pathway{i + 1}_class,")
 
-
+    # Format the final header
     csvHeader = f"{headerPrefix},{headerSuffix}"
 
     return csvHeader
@@ -129,16 +139,18 @@ def makeCSVHeader(n):
 
 
 source = r'/home/scratch/Downloads/source.txt'
-sourceList = ['K10','K00001', 'K0','K00002', 'K00003']
+sourceList = ['K00001','K00003']
 # List with ignored pathways, can be empty
 ignoredPathway = ['ko01100']
 
 # Seet verbosity of KEGG searcher
-v = True
+v = False
 # Initialize the main list, wich contains other list about enzyme + pathways
 enzymeList = []
 
-"""
+#
+# Main loop to get all required info about combo enzyme + pathway N
+#
 for enzyme in sourceList:
     # Get info about the enzyme
     aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, v)
@@ -151,12 +163,31 @@ for enzyme in sourceList:
         for liste in aboutEnzyme:
             enzymeList.append(liste)
 
-print(enzymeList)
+#
+# Formating the main list enzymeList (double list)
+#
 
-"""
+# Initialize an empty list for each combo enzyme1 + pathwayN
+# Which contains only the enzyme code
+codeList = []
+for individualList in enzymeList:
+    codeList.append(individualList[0])
+
+# Get the maximum code occurence
+codeMax = max(codeList,key=codeList.count)
+
+# Get the number of the code in the codeList
+nbMaxOccurence = codeList.count(codeMax)
+
+# Create the header of the CSV file, with dedicated function
+# - 1 because codeMax include the enzyme code itsel (enzyme + pathwayN)
+# Need only the number of pathway (represented by a line in the list)
+csvHeader = makeCSVHeader(nbMaxOccurence - 1)
 
 
-print(makeCSVHeader(4))
+
+
+
 
 
 
