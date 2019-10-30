@@ -189,4 +189,25 @@ nbMaxOccurence = codeList.count(codeMax)
 csvHeader = makeCSVHeader(nbMaxOccurence - 1)
 
 
-    
+# Define the last list, which contain [[enzyme], [pathway1], [pathway2], [pathwayN]] 
+masterList = []
+# Loop on the code gived by the input file
+for code in sourceList:
+    # Initialize a list with a empty value on index 0
+    tmpList = ['']
+    # Loop on list in the double list enzymeList
+    for liste in enzymeList:
+        # If enzyme code from file and enzyme code from double list match
+        if liste[0] == code:
+            # Get the index of the separator symbol
+            sepPosition = liste.index('>')
+            # First position of list always take from the begining to the separator symbol 
+            tmpList[0] = liste[0:sepPosition]
+            # And always add successively from the separator symbol to the end of the line
+            tmpList.append(liste[sepPosition+1:-1])
+    # Add the temp list to the final master list
+    masterList.append(tmpList)
+
+
+print(masterList)
+
