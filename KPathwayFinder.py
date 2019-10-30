@@ -101,6 +101,24 @@ def pathwayInfo(code):
     return pathwayList
 
 
+# -------------------------------------------------------------------------------------------------
+
+
+def makeCSVHeader(n):
+
+    headerPrefix = 'enzyme_code,enzyme_name,enzyme_definition'
+
+    headerSuffix = ''
+
+    for i in range(n):
+        headerSuffix = headerSuffix + (f"pathway{i + 1}_code, pathway{i + 1}_name, pathway{i + 1}_class,")
+
+
+    csvHeader = f"{headerPrefix},{headerSuffix}"
+
+    return csvHeader
+
+
 
 # -------------------------------------------------------------------------------------------------
 # --------------------------------------------- Main ----------------------------------------------
@@ -116,11 +134,11 @@ sourceList = ['K10','K00001', 'K0','K00002', 'K00003']
 ignoredPathway = ['ko01100']
 
 # Seet verbosity of KEGG searcher
-v = False
+v = True
 # Initialize the main list, wich contains other list about enzyme + pathways
 enzymeList = []
 
-
+"""
 for enzyme in sourceList:
     # Get info about the enzyme
     aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, v)
@@ -133,7 +151,14 @@ for enzyme in sourceList:
         for liste in aboutEnzyme:
             enzymeList.append(liste)
 
-
-
 print(enzymeList)
+
+"""
+
+
+print(makeCSVHeader(4))
+
+
+
+
 
