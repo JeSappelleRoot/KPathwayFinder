@@ -189,7 +189,7 @@ nbMaxOccurence = codeList.count(codeMax)
 # Create the header of the CSV file, with dedicated function
 # - 1 because codeMax include the enzyme code itsel (enzyme + pathwayN)
 # Need only the number of pathway (represented by a line in the list)
-csvHeader = makeCSVHeader(nbMaxOccurence - 1)
+csvHeader = makeCSVHeader(nbMaxOccurence)
 # Remove last comma
 csvHeader = csvHeader[:-1]
 
@@ -197,7 +197,7 @@ csvHeader = csvHeader[:-1]
 masterList = []
 # Loop on the code gived by the input file
 for code in sourceList:
-    print(f"[+] Merging pathways from {code}")
+    print(f"[+] Merging pathways from {code} enzyme")
     # Initialize a list with a empty value on index 0
     tmpList = ['']
     # Loop on list in the double list enzymeList
@@ -213,15 +213,15 @@ for code in sourceList:
     # Add the temp list to the final master list
     masterList.append(tmpList)
 
-print(masterList)
 
-"""
-
+# With open statement to write into output file
 with open(output, 'w') as fileStream:
+    # Specify CSV delimiter file
     writer = csv.writer(fileStream, delimiter=',')
-
+    # Write CSV header (with a split)
+    writer.writerow(csvHeader.split(','))
+    # For each list in masterList, remove sub lists with sum
+    # and write the entire line in CSV file
     for liste in masterList:
-        for element in sum(liste, []):
-            print(element)
+        writer.writerow(sum(liste,[]))
 
-"""
