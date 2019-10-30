@@ -1,3 +1,6 @@
+#!/bin/python3
+
+
 import csv
 import argparse
 from os import path, sys
@@ -51,10 +54,6 @@ def enzymeInfo(code, ignored,verbosity):
     else:
 
         dictResult = kSearch.parse(result)
-        
-        # Get all pathways as keys in dictionnary
-        pathwayList = list(dictResult['PATHWAY'].keys())
-        
 
         # Create prefix list, info about enzyme herself
         prefixList = []
@@ -75,25 +74,41 @@ def enzymeInfo(code, ignored,verbosity):
             prefixList.append('NODEFINITION')
 
 
-        # Create final list, which contain : 
-        # - prefix (info about enzyme) 
-        # - suffix list (info about each enzyme's pathways)
-        finalList = []
+        # If pathway exist as a key in result
+        if 'PATHWAY' in dictResult.keys():
 
-        for pathway in pathwayList:
-            if pathway not in ignored:
-                print(f"  [-] Get info about {pathway} pathway")
-                suffixList = pathwayInfo(pathway)
+            # Get all pathways as keys in dictionnary
+            pathwayList = list(dictResult['PATHWAY'].keys())
 
-                finalList.append(prefixList + suffixList)
-                
-            else:
-                print(f"  [!] Ignored pathway : {pathway}")
+            # Create final list, which contain : 
+            # - prefix (info about enzyme) 
+            # - suffix list (info about each enzyme's pathways)
+            finalList = []
+
+            for pathway in pathwayList:
+                if pathway not in ignored:
+                    print(f"  [-] Get info about {pathway} pathway")
+                    suffixList = pathwayInfo(pathway)
+                    
+                    # Create finalList to concatene prefix and suffix
+                    finalList.append(prefixList + suffixList)
+                    
+                else:
+                    print(f"  [!] Ignored pathway : {pathway}")
+
+        # Else, if pathway doesn't exist as a key in result
+        elif 'PATHWAY' not in dictResult.keys():
+
+            # Initialize an empty list
+            finalList = []
+            # Display a alert message
+            print(f"[!] No pathway detected for enzyme {code}")
+            # Artificially create pathway entry, but empty 
+            suffixList = ['>', 'NOPATHWAY']
+            # Create finalList to concatene prefix and suffix
+            finalList.append(prefixList + suffixList)
 
 
-            
-
-        
         return finalList
 
 
@@ -303,8 +318,9 @@ for code in sourceList:
 # Write in file in CSV style (comma separated)
 #
 
+
 # With open statement to write into output file
-with open(output, 'w') as fileStream:
+with open(outputFile, 'w') as fileStream:
     # Specify CSV delimiter file
     writer = csv.writer(fileStream, delimiter=',')
     # Write CSV header (with a split)
