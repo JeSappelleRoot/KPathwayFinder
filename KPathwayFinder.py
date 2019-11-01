@@ -246,6 +246,12 @@ ignoredPathway = ['ko01100']                                #
 with open(inputFile, 'r') as fileStream:
     sourceList = fileStream.read().splitlines()
 
+# Remove empty string in initial list
+# Can cause an issue when merging and writting pathway at the end of script
+# Post 1046 
+# https://stackoverflow.com/questions/3845423/remove-empty-strings-from-a-list-of-strings
+sourceList = list(filter(None, sourceList))
+
 # Initialize the main list, wich contains other list about enzyme + pathways
 enzymeList = []
 
