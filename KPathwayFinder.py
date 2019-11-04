@@ -265,21 +265,30 @@ sourceList = list(filter(None, sourceList))
 # Initialize the main list, wich contains other list about enzyme + pathways
 enzymeList = []
 
-#
-# Main loop to get all required info about combo enzyme + pathway N
-#
-for enzyme in sourceList:
-    # Get info about the enzyme
-    aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, v)
-    # If the function return False, the KEGG request is not valid and pass at the other enzyme
-    if aboutEnzyme == False:
-        print(f"[!] Something wrong happened with enzyme {enzyme} (skipped)\n")
-        pass
-    else:
-        # Else, for each list return by the function, add these in the main list
-        for liste in aboutEnzyme:
-            enzymeList.append(liste)
+# Main try to detect properly CTRL+C
+try:
 
+    #
+    # Main loop to get all required info about combo enzyme + pathway N
+    #
+    for enzyme in sourceList:
+        # Get info about the enzyme
+        aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, v)
+        # If the function return False, the KEGG request is not valid and pass at the other enzyme
+        if aboutEnzyme == False:
+            print(f"[!] Something wrong happened with enzyme {enzyme} (skipped)\n")
+            pass
+        else:
+            # Else, for each list return by the function, add these in the main list
+            for liste in aboutEnzyme:
+                enzymeList.append(liste)
+
+# In case of CTRL+C, exit the script without writting
+except KeyboardInterrupt:
+    print("\n[-] KEGG research aborted")
+    print("[-] Nothing written\n")
+    print("bye.")
+    exit()
 
 #
 # Formating the main list enzymeList (double list)
@@ -343,7 +352,7 @@ with open(outputFile, 'w') as fileStream:
     # Get csvHeader's lenght
     maxLenght = len(csvHeader.split(','))
     # For each list in masterList, remove sub lists with sum
-    # and write the entire line in CSV file
+    # and write the entire line in CSV file    
     for liste in masterList:
         # If lenght of list is lower than csvHeader lenght
         if len(sum(liste, [])) < maxLenght:
@@ -358,6 +367,5 @@ with open(outputFile, 'w') as fileStream:
         # Else, just add the entire list as a CSV row
         else:
             row = sum(liste,[])
-
 
         writer.writerow(row)
