@@ -2,6 +2,7 @@
 
 
 import csv
+import timeit
 import argparse
 from os import path, sys
 from bioservices.kegg import KEGG
@@ -33,7 +34,7 @@ def displayBanner():
 
 
 
-def enzymeInfo(code, ignored,verbosity):
+def enzymeInfo(code, ignored,stats, verbosity):
 # Function to get info about an enzyme, from the code
 # This function return a double list
 
@@ -44,6 +45,7 @@ def enzymeInfo(code, ignored,verbosity):
     print(f"[+] Get info about enzyme {code}")
     result = kSearch.get(code)
 
+    # If KEGG return an int, the enzyme code doesn't match in databases
     if type(result) is int:
         return False
     else:
@@ -79,6 +81,8 @@ def enzymeInfo(code, ignored,verbosity):
             # Get all pathways as keys in dictionnary
             pathwayList = list(dictResult['PATHWAY'].keys())
 
+
+
             # Create final list, which contain : 
             # - prefix (info about enzyme) 
             # - suffix list (info about each enzyme's pathways)
@@ -89,6 +93,10 @@ def enzymeInfo(code, ignored,verbosity):
                 if pathway not in ignored:
                     print(f"  [-] Get info about {pathway} pathway")
                     suffixList = pathwayInfo(pathway)
+
+                    # Add number of pathway for stats
+                    stats['NB_PATHWAY'] = stats['NB_PATHWAY'] + 1
+
                     # Create finalList to concatene prefix and suffix
                     finalList.append(prefixList + suffixList)
 
@@ -97,6 +105,9 @@ def enzymeInfo(code, ignored,verbosity):
                 elif len(pathwayList) == 1 and pathway in ignored:
                     print(f"  [!] Enzyme {code} have only 1 pathway : {pathway}")
                     print(f"  [!] and this pathway is ignored")
+                    # Add entries for stats 
+                    stats['ENZYME_WITHOUT_PATHWAY'] = stats['ENZYME_WITHOUT_PATHWAY'] + 1
+                    stats['LIST_ENZYME_WITHOUT_PATHWAY'].append(code)
                     # Artificially create pathway entry, but empty 
                     suffixList = ['>', 'NA']
                     # Create finalList to concatene prefix and suffix
@@ -112,6 +123,8 @@ def enzymeInfo(code, ignored,verbosity):
             finalList = []
             # Display a alert message
             print(f"[!] No pathway detected for enzyme {code}\n")
+            # Increment number of failed pathway in stats
+            stats['MISSING_PATHWAY'] = stats['MISSING_PATHWAY'] + 1
             # Artificially create pathway entry, but empty 
             suffixList = ['>', 'NA']
             # Create finalList to concatene prefix and suffix
@@ -252,6 +265,24 @@ ignoredPathway = ['ko01100']                                #
 
 
 
+# Initialize a dictionnary to report statistics at the end of the script
+dictStat = {
+
+    'IGNORED_PATHWAY':              len(ignoredPathway),
+    'START_TIME':                   timeit.default_timer(),
+    'END_TIME':                     0,
+    'NB_ENZYME':                    0,
+    'NB_PATHWAY':                   0,
+    'FAILED_ENZYME':                0,
+    'ENZYME_WITHOUT_PATHWAY':       0,
+    'MISSING_PATHWAY':              0,
+    'LIST_FAILED_ENZYME':           [],
+    'LIST_ENZYME_WITHOUT_PATHWAY':  []
+
+}
+
+
+
 # Read input file with .read().splitlines to avoid \n at end of each lines
 with open(inputFile, 'r') as fileStream:
     sourceList = fileStream.read().splitlines()
@@ -262,21 +293,27 @@ with open(inputFile, 'r') as fileStream:
 # https://stackoverflow.com/questions/3845423/remove-empty-strings-from-a-list-of-strings
 sourceList = list(filter(None, sourceList))
 
+# Add total number of enzymes in stats
+dictStat['NB_ENZYME'] = len(sourceList)
+
 # Initialize the main list, wich contains other list about enzyme + pathways
 enzymeList = []
 
 # Main try to detect properly CTRL+C
 try:
 
-    #
-    # Main loop to get all required info about combo enzyme + pathway N
-    #
+#
+# Main loop to get all required info about combo enzyme + pathway N
+#
     for enzyme in sourceList:
         # Get info about the enzyme
-        aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, v)
+        aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, dictStat, v)
         # If the function return False, the KEGG request is not valid and pass at the other enzyme
         if aboutEnzyme == False:
-            print(f"[!] Something wrong happened with enzyme {enzyme} (skipped)\n")
+            print(f"  [!] Something wrong happened with enzyme {enzyme} (skipped)\n")
+            # Add entry for stats (increment counter and add enzyme code in list)
+            dictStat['FAILED_ENZYME'] = dictStat['FAILED_ENZYME'] + 1
+            dictStat['LIST_FAILED_ENZYME'].append(enzyme)
             pass
         else:
             # Else, for each list return by the function, add these in the main list
@@ -321,7 +358,9 @@ csvHeader = csvHeader[:-1]
 masterList = []
 # Loop on the code gived by the input file
 for code in sourceList:
-    print(f"[+] Merging pathways from {code} enzyme")
+    # if search about enzyme is successfull
+    if code not in dictStat['LIST_FAILED_ENZYME']:
+        print(f"[+] Merging pathways from {code} enzyme")
     # Initialize a list with a empty value on index 0
     tmpList = ['']
     # Loop on list in the double list enzymeList
@@ -342,6 +381,9 @@ for code in sourceList:
 # Write in file in CSV style (comma separated)
 #
 
+# Add empty line in console
+print("\n")
+
 # With open statement to write into output file
 with open(outputFile, 'w') as fileStream:
     # Specify CSV delimiter file
@@ -354,18 +396,62 @@ with open(outputFile, 'w') as fileStream:
     # For each list in masterList, remove sub lists with sum
     # and write the entire line in CSV file    
     for liste in masterList:
-        # If lenght of list is lower than csvHeader lenght
-        if len(sum(liste, [])) < maxLenght:
-            # Find the number of missing values
-            nbMissingValues = maxLenght - len(sum(liste, []))
-            # Add the list in the raw
-            row = sum(liste,[])
-            # And for the number of missing values
-            for i in range(nbMissingValues):
-                # Add 'NA
-                row.append('NA')
-        # Else, just add the entire list as a CSV row
-        else:
-            row = sum(liste,[])
+        # If a list not empty
+        if len(liste) > 1:
+            print(f"[+] Writing informations about enzyme {liste[0][0]}")
+            # If lenght of list is lower than csvHeader lenght
+            if len(sum(liste, [])) < maxLenght:
+                # Find the number of missing values
+                nbMissingValues = maxLenght - len(sum(liste, []))
+                # Add the list in the raw
+                row = sum(liste,[])
+                # And for the number of missing values
+                for i in range(nbMissingValues):
+                    # Add 'NA
+                    row.append('NA')
+            # Else, just add the entire list as a CSV row
+            else:
+                row = sum(liste,[])
 
-        writer.writerow(row)
+            writer.writerow(row)
+
+
+
+dictStat['END_TIME'] = timeit.default_timer()
+# Total time of execution, with 2 decimals
+totalTime = round(dictStat['END_TIME'] - dictStat['START_TIME'], 2)
+
+# Display statistics
+print('---------------------------------------------------\n')
+
+# print(f"")
+print(f"Total time of execution : {totalTime} second(s)\n")
+print(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}")
+print(f"Total number of founded pathways : {dictStat['NB_PATHWAY']}")
+print(f"Total number of failure in research about enzyme : {dictStat['FAILED_ENZYME']}")
+print(f"Total number of missing pathways for enzymes : {dictStat['MISSING_PATHWAY']}")
+print(f"Total number of enzymes without pathway : {dictStat['ENZYME_WITHOUT_PATHWAY']}")
+statFile = f"{path.dirname(outputFile)}/stats.txt"
+
+with open(statFile, 'w') as fileStream:
+    fileStream.write(f"Total time of execution : {totalTime} second(s)\n")
+    fileStream.write(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}\n")
+    fileStream.write(f"Total number of founded pathways : {dictStat['NB_PATHWAY']}\n")
+    fileStream.write(f"Total number of failure in research about enzyme : {dictStat['FAILED_ENZYME']}\n")
+    fileStream.write(f"Total number of missing pathways for enzymes : {dictStat['MISSING_PATHWAY']}\n")
+    fileStream.write(f"Total number of enzymes without pathway : {dictStat['ENZYME_WITHOUT_PATHWAY']}\n")
+
+    if dictStat['FAILED_ENZYME'] != 0:
+        fileStream.write(f"List of failed enzymes : \n{dictStat['LIST_FAILED_ENZYME']}\n")
+
+    if dictStat['ENZYME_WITHOUT_PATHWAY'] != 0:
+        fileStream.write(f"List of enzymes without pathway :\n{dictStat['LIST_ENZYME_WITHOUT_PATHWAY']}\n")
+
+
+
+print(f"[?] For more information, view {statFile} file")
+
+
+# if dictStat['FAILED_ENZYME'] != 0:
+    
+    
