@@ -85,13 +85,23 @@ def enzymeInfo(code, ignored,verbosity):
             finalList = []
 
             for pathway in pathwayList:
+                # If pathway not in ignored list
                 if pathway not in ignored:
                     print(f"  [-] Get info about {pathway} pathway")
                     suffixList = pathwayInfo(pathway)
-
                     # Create finalList to concatene prefix and suffix
                     finalList.append(prefixList + suffixList)
-                    
+
+                # If enzyme have only 1 pathway and this pathway is in ignored list
+                # Bad luck ! 
+                elif len(pathwayList) == 1 and pathway in ignored:
+                    print(f"  [!] Enzyme {code} have only 1 pathway : {pathway}")
+                    print(f"  [!] and this pathway is ignored")
+                    # Artificially create pathway entry, but empty 
+                    suffixList = ['>', 'NA']
+                    # Create finalList to concatene prefix and suffix
+                    finalList.append(prefixList + suffixList)
+
                 else:
                     print(f"  [!] Ignored pathway : {pathway}")
 
