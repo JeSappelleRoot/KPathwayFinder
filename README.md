@@ -135,7 +135,7 @@ Total number of enzymes having only ignored pathways : 0
 
 ## Statistics reporting in file
 ```
-Total time of execution : 60.23 second(s)
+Total time of execution : 60.82 second(s)
 Total number of enzymes parsed : 4
 Total number of found pathways : 6
 Total number of failure in research about enzyme : 2
