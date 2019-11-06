@@ -31,8 +31,22 @@ To detect the maximum number of pathways, KPathwayFinder have to parse all enzym
 
 # Exclude manually some pathways
 
-If you want exclude some pathways, you need to modify the script. 
-The variable 
+If you want exclude some pathways, you need to modify the script, line 263. 
+
+```
+#############################################################
+#MODIFY THIS VALUE TO IGNORE SPECIFIC PATHWAY (CAN BE EMPTY)#
+# List with ignored pathways                                #
+ignoredPathway = []                                         #
+#                                                           #
+#############################################################
+```
+
+You can specify some pathways, with the following syntax :  
+`ignoredPathway = ['k0001', 'k0002', 'k0003']`  
+
+KPathwayFinder will automatically skip these pathways (view example below)
+
 
 # Example 
 
