@@ -8,6 +8,7 @@
 - [Example](#example)
   - [Command line](#command-line)
   - [Statistics reporting in file](#statistics-reporting-in-file)
+  - [Informations retrieved from KEGG](#informations-retrieved-from-kegg)
 
 KPathwayFinder is an automated request tool on KEGG databases (Kyoto Encyclopedia of Genes and Genomes, https://www.genome.jp/kegg/).  
 From a list of KO ortholog numbers, the script returns the molecular function of the KO as it is referenced in the KEGG Orthology database, the numbers and names of the pathway(s) containing this function, as well as their classification in the BRITE functional hierarchy.
@@ -147,3 +148,39 @@ List of failed enzymes during search :
 >KPathwayFinder will automatically detect the parent directory of the output file
 
 
+## Informations retrieved from KEGG
+
+
+All information retrieved with the script can be checked online, with your favorite browser : 
+
+**About enzyme K00012 (https://www.genome.jp/dbget-bin/www_bget?ko:K00012)**
+
+![K00012](https://user-images.githubusercontent.com/52102633/68345906-3f0cb000-00b8-11ea-9041-19aaf3f8b191.png)
+
+The script will recover the following data :  
+- Name : `UGDH, ugd`
+- Definition : `UDPglucose 6-dehydrogenase [EC:1.1.1.22]`
+- pathways : `ko00040`, `ko00053`, `ko00520`, `ko01100`
+
+After these informations, a function will be call to retrieve some informations about each pathways : 
+- Code of the pathway
+- Name of the pathway
+- Class of the pathway
+
+For each pathway of the K00012 enzyme : 
+
+- 1st pathway ko00053 (https://www.genome.jp/dbget-bin/www_bget?ko00053)
+
+![pw1](https://user-images.githubusercontent.com/52102633/68346057-bc382500-00b8-11ea-9b91-730dcdeed2bf.png)
+
+- 2nd pathway ko00520 (https://www.genome.jp/dbget-bin/www_bget?ko00520)
+  
+![pw2](https://user-images.githubusercontent.com/52102633/68346059-bd695200-00b8-11ea-8b72-63995a7c87f4.png)
+
+- 3rd pathway ko01100 (https://www.genome.jp/dbget-bin/www_bget?ko01100)
+
+![pw3](https://user-images.githubusercontent.com/52102633/68346060-bd695200-00b8-11ea-9e29-7fc414c61684.png)
+
+- 4th pathway ko00040 (https://www.genome.jp/dbget-bin/www_bget?ko00040)
+
+![pw4](https://user-images.githubusercontent.com/52102633/68346061-be01e880-00b8-11ea-9bfd-51cb1437ae26.png)
