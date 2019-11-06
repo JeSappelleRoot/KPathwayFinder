@@ -9,6 +9,9 @@
   - [Command line](#command-line)
   - [Statistics reporting in file](#statistics-reporting-in-file)
 
+KPathwayFinder is an automated request tool on KEGG databases (Kyoto Encyclopedia of Genes and Genomes, https://www.genome.jp/kegg/).  
+From a list of KO ortholog numbers, the script returns the molecular function of the KO as it is referenced in the KEGG Orthology database, the numbers and names of the pathway(s) containing this function, as well as their classification in the BRITE functional hierarchy.
+
 
 
 # How to use it
@@ -41,9 +44,11 @@ This file will contains 1 line by enzyme code, with fields :
   
 Then, the script will create fields about pathways with the maximum number of pathways. Final header of CSV file will looks like : 
 
-| Enzyme code | Enzyme name | Enzyme definition | code of pw1 | name of pw1 | class of pw1 | code of pw2 | name of pw2 | class of pw2 | name of pw n | ... |   |
+| Enzyme code | Enzyme name | Enzyme definition | code of pw1 | name of pw1 | class of pw1 | code of pw2 | name of pw2 | class of pw2 | name of pw n+1 | ... |   |
 |-------------|-------------|-------------------|-------------|-------------|--------------|-------------|-------------|--------------|--------------|-----|---|
 |             |             |                   |             |             |              |             |             |              |              |     |   |
+
+
 
 # Exclude manually some pathways
 
@@ -140,3 +145,5 @@ List of failed enzymes during search :
 ```
 
 >KPathwayFinder will automatically detect the parent directory of the output file
+
+
