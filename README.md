@@ -3,6 +3,7 @@
 - [KPathwayFinder](#kpathwayfinder)
 - [How to use it](#how-to-use-it)
 - [Before use it](#before-use-it)
+- [About output file](#about-output-file)
 - [Exclude manually some pathways](#exclude-manually-some-pathways)
 - [Example](#example)
   - [Command line](#command-line)
@@ -28,6 +29,21 @@ To detect the maximum number of pathways, KPathwayFinder have to parse all enzym
 
 >- **KPathwayFinder will write final file only at the end of the search**  
 >- **If an error occurs during the search, the script will not write the final file**
+
+# About output file
+
+KPathwayFinder will automatically detect the maximum number of pathways, and create an output file as a CSV formatted file. 
+
+This file will contains 1 line by enzyme code, with fields : 
+- enzyme code
+- enzyme name
+- enzyme definition
+  
+Then, the script will create fields about pathways with the maximum number of pathways. Final header of CSV file will looks like : 
+
+| Enzyme code | Enzyme name | Enzyme definition | code of pw1 | name of pw1 | class of pw1 | code of pw2 | name of pw2 | class of pw2 | name of pw n | ... |   |
+|-------------|-------------|-------------------|-------------|-------------|--------------|-------------|-------------|--------------|--------------|-----|---|
+|             |             |                   |             |             |              |             |             |              |              |     |   |
 
 # Exclude manually some pathways
 
