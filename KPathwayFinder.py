@@ -1,6 +1,4 @@
 #!/bin/python3
-
-
 import csv
 import timeit
 import argparse
