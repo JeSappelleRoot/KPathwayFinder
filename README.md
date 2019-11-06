@@ -13,7 +13,7 @@
 KPathwayFinder is an automated request tool on KEGG databases (Kyoto Encyclopedia of Genes and Genomes, https://www.genome.jp/kegg/).  
 From a list of KO ortholog numbers, the script returns the molecular function of the KO as it is referenced in the KEGG Orthology database, the numbers and names of the pathway(s) containing this function, as well as their classification in the BRITE functional hierarchy.
 
-
+>**If you encounter any bugs, please provide the command used and the source file**
 
 # How to use it
 
