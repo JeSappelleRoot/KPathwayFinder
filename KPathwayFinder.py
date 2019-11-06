@@ -275,7 +275,7 @@ dictStat = {
     'NB_PATHWAY':                           0,                          # NB pathways detected
     'FAILED_ENZYME':                        0,                          # NB of failed search with KEGG about an enzyme
     'ENZYME_ONLY_IGNORED_PATHWAY':          0,                          # NB of enzymes with only pathways in ignored list
-    'MISSING_PATHWAY_IN_KEGG'               0,                          # NB of pathways missing in KEGG db
+    'MISSING_PATHWAY_IN_KEGG':              0,                          # NB of pathways missing in KEGG db
     'LIST_FAILED_ENZYME':                   [],                         # List of failed enzymes during search
     'LIST_ENZYME_ONLY_IGNORED_PATHWAY':     []                          # List of enzymes without pathways (only ignored pathways)
 
