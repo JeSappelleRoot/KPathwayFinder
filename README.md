@@ -11,6 +11,7 @@
   - [Command line](#command-line)
   - [Statistics reporting in file](#statistics-reporting-in-file)
 - [Informations retrieved from KEGG](#informations-retrieved-from-kegg)
+- [Verbose mode](#verbose-mode)
 
 KPathwayFinder is an automated request tool on KEGG databases (Kyoto Encyclopedia of Genes and Genomes, https://www.genome.jp/kegg/).  
 From a list of KO ortholog numbers, the script returns the molecular function of the KO as it is referenced in the KEGG Orthology database, the numbers and names of the pathway(s) containing this function, as well as their classification in the BRITE functional hierarchy.
@@ -23,7 +24,7 @@ KPathwayFinder is a very simple tool. You need to specify :
 - `--input` argument which indicate source file, wich contains enzyme list  
 - `--output` argument which indicate output file (**.txt or .csv extension**), which will contains the result of the search about pathways  
   
-> You can also use `-v` argument to increase verbosity of KEGG library
+> You can also use `-v` argument to increase verbosity of KEGG library (view)
 
 # Before use it
 
@@ -203,3 +204,12 @@ For each pathway of the K00012 enzyme :
 - 4th pathway ko00040 (https://www.genome.jp/dbget-bin/www_bget?ko00040)
 
 ![pw4](https://user-images.githubusercontent.com/52102633/68346061-be01e880-00b8-11ea-9bfd-51cb1437ae26.png)
+
+# Verbose mode
+
+KEGG module have is own verbosity, looks pretty cool !   
+You can activate it by specify `-v` in your command line
+
+![verbose](https://user-images.githubusercontent.com/52102633/68347590-120ecc00-00bd-11ea-8833-d7f5f297ff76.png)
+
+
