@@ -8,7 +8,7 @@
 - [Example](#example)
   - [Command line](#command-line)
   - [Statistics reporting in file](#statistics-reporting-in-file)
-  - [Informations retrieved from KEGG](#informations-retrieved-from-kegg)
+- [Informations retrieved from KEGG](#informations-retrieved-from-kegg)
 
 KPathwayFinder is an automated request tool on KEGG databases (Kyoto Encyclopedia of Genes and Genomes, https://www.genome.jp/kegg/).  
 From a list of KO ortholog numbers, the script returns the molecular function of the KO as it is referenced in the KEGG Orthology database, the numbers and names of the pathway(s) containing this function, as well as their classification in the BRITE functional hierarchy.
@@ -148,7 +148,7 @@ List of failed enzymes during search :
 >KPathwayFinder will automatically detect the parent directory of the output file
 
 
-## Informations retrieved from KEGG
+# Informations retrieved from KEGG
 
 
 All information retrieved with the script can be checked online, with your favorite browser : 
