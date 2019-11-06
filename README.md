@@ -24,7 +24,7 @@ KPathwayFinder is a very simple tool. You need to specify :
 - `--input` argument which indicate source file, wich contains enzyme list  
 - `--output` argument which indicate output file (**.txt or .csv extension**), which will contains the result of the search about pathways  
   
-> You can also use `-v` argument to increase verbosity of KEGG library (view)
+> You can also use `-v` argument to increase verbosity of KEGG library (view [Verbose mode](#verbose-mode) section)
 
 # Before use it
 
@@ -69,6 +69,11 @@ Then, the script will create fields about pathways with the maximum number of pa
 |-------------|-------------|-------------------|-------------|-------------|--------------|-------------|-------------|--------------|--------------|-----|---|
 |             |             |                   |             |             |              |             |             |              |              |     |   |
 
+
+The separator in the CSV file will be a comma.  
+In case of multiple values in a field (enzyme name or pathway class most of the time), values are separated by semi-colon inside the field.  
+
+> View output-example.csv file
 
 
 # Exclude manually some pathways
