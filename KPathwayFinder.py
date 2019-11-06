@@ -453,7 +453,7 @@ with open(statFile, 'w') as fileStream:
         fileStream.write(f"List of enzymes only with ignored pathways :\n{dictStat['LIST_ENZYME_ONLY_IGNORED_PATHWAY']}\n")
     
     # If there are enzymes without pathways in KEGG db
-    if dictStat['LIST_MISSING_PATHWAY_IN_KEGG'] != 0:
+    if dictStat['LIST_MISSING_PATHWAY_IN_KEGG']:
         fileStream.write(f"List of enzymes without pathways in KEGG db : \n{dictStat['LIST_MISSING_PATHWAY_IN_KEGG']}\n")
 
 
