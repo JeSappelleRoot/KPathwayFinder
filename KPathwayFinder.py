@@ -123,8 +123,9 @@ def enzymeInfo(code, ignored,stats, verbosity):
             finalList = []
             # Display a alert message
             print(f"[!] No pathway detected for enzyme {code}\n")
-            # Increment number of failed pathway in stats
+            # Increment number of failed pathway in stats and add enzyme in list
             stats['MISSING_PATHWAY_IN_KEGG'] = stats['MISSING_PATHWAY_IN_KEGG'] + 1
+            stats['LIST_MISSING_PATHWAY_IN_KEGG'].append(code)
             # Artificially create pathway entry, but empty 
             suffixList = ['>', 'NA']
             # Create finalList to concatene prefix and suffix
@@ -277,7 +278,8 @@ dictStat = {
     'ENZYME_ONLY_IGNORED_PATHWAY':          0,                          # NB of enzymes with only pathways in ignored list
     'MISSING_PATHWAY_IN_KEGG':              0,                          # NB of pathways missing in KEGG db
     'LIST_FAILED_ENZYME':                   [],                         # List of failed enzymes during search
-    'LIST_ENZYME_ONLY_IGNORED_PATHWAY':     []                          # List of enzymes without pathways (only ignored pathways)
+    'LIST_ENZYME_ONLY_IGNORED_PATHWAY':     [],                         # List of enzymes without pathways (only ignored pathways)
+    'LIST_MISSING_PATHWAY_IN_KEGG':         [],                         # List of enzymes without pathways in KEGG db
 
 }
 
@@ -424,7 +426,7 @@ totalTime = round(dictStat['END_TIME'] - dictStat['START_TIME'], 2)
 # Display statistics
 print('---------------------------------------------------\n')
 
-# print(f"")
+
 print(f"Total time of execution : {totalTime} second(s)\n")
 print(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}")
 print(f"Total number of founded pathways : {dictStat['NB_PATHWAY']}")
@@ -433,6 +435,7 @@ print(f"Total number of enzymes without pathway in KEGG db : {dictStat['MISSING_
 print(f"Total number of enzymes having only ignored pathways : {dictStat['ENZYME_WITHOUT_PATHWAY']}")
 statFile = f"{path.dirname(outputFile)}/stats.txt"
 
+# Write stats in file, with list for details
 with open(statFile, 'w') as fileStream:
     fileStream.write(f"Total time of execution : {totalTime} second(s)\n")
     fileStream.write(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}\n")
@@ -441,17 +444,20 @@ with open(statFile, 'w') as fileStream:
     fileStream.write(f"Total number of enzymes without pathway in KEGG db : {dictStat['MISSING_PATHWAY_IN_KEGG']}\n")
     fileStream.write(f"Total number of enzymes having only ignored pathways : {dictStat['ENZYME_ONLY_IGNORED_PATHWAY']}\n")
 
+    # If there are failed enzymes during search
     if dictStat['FAILED_ENZYME'] != 0:
         fileStream.write(f"List of failed enzymes during search : \n{dictStat['LIST_FAILED_ENZYME']}\n")
 
-    if dictStat['ENZYME_WITHOUT_PATHWAY'] != 0:
+    # If there are enzyme with only ignored pathways (in ignoredList)
+    if dictStat['ENZYME_ONLY_IGNORED_PATHWAY'] != 0:
         fileStream.write(f"List of enzymes only with ignored pathways :\n{dictStat['LIST_ENZYME_ONLY_IGNORED_PATHWAY']}\n")
+    
+    # If there are enzymes without pathways in KEGG db
+    if dictStat['LIST_MISSING_PATHWAY_IN_KEGG'] != 0:
+        fileStream.write(f"List of enzymes without pathways in KEGG db : \n{dictStat['LIST_MISSING_PATHWAY_IN_KEGG']}\n")
 
 
 
 print(f"[?] For more information, view {statFile} file")
 
-
-# if dictStat['FAILED_ENZYME'] != 0:
-    
     
