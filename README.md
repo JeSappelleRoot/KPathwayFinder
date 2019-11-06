@@ -3,6 +3,8 @@
 - [KPathwayFinder](#kpathwayfinder)
 - [How to use it](#how-to-use-it)
 - [Before use it](#before-use-it)
+- [Requirements](#requirements)
+  - [Requirement file](#requirement-file)
 - [About output file](#about-output-file)
 - [Exclude manually some pathways](#exclude-manually-some-pathways)
 - [Example](#example)
@@ -33,6 +35,23 @@ To detect the maximum number of pathways, KPathwayFinder have to parse all enzym
 
 >- **KPathwayFinder will write final file only at the end of the search**  
 >- **If an error occurs during the search, the script will not write the final file**
+
+# Requirements
+
+KPathwayFinder use several python libraries : 
+- `csv` to format the output file
+- `timeit` to calculate the total time of script execution
+- `argparse` to parse arguments in command line
+- `os`, specifically `path` and `sys`
+- `bioservices` to perform KEGG search
+
+## Requirement file 
+
+```
+bioservices==1.6.0
+```
+Just run `pip3 install -r requirements.txt` to install required libraries
+
 
 # About output file
 
