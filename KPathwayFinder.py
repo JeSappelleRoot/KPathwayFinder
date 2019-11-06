@@ -312,7 +312,7 @@ try:
         aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, dictStat, v)
         # If the function return False, the KEGG request is not valid and pass at the other enzyme
         if aboutEnzyme == False:
-            print(f"  [!] Something wrong happened with enzyme {enzyme} (skipped)\n")
+            print(f"  [!] Something wrong happened with enzyme {enzyme} (skipped)")
             # Add entry for stats (increment counter and add enzyme code in list)
             dictStat['FAILED_ENZYME'] = dictStat['FAILED_ENZYME'] + 1
             dictStat['LIST_FAILED_ENZYME'].append(enzyme)
