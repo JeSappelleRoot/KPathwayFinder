@@ -178,6 +178,7 @@ After the execution of KPathwayFinder, the output file will have the following c
 | K10002      | gltK; aatM  | glutamate/aspartate transport system permease protein          | ko02010       | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020       | Two-component system              | Environmental Information Processing; Signal transduction | NA            | NA                                          | NA                                  | NA            | NA                          | NA             |
 
 
+*table generated on https://www.tablesgenerator.com/markdown_tables*
 
 > Make sure you have removed all non needed comma with your favorite text editor, otherwise KPathwayFinder will considere lines like complete
 
