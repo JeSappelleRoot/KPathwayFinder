@@ -313,7 +313,7 @@ elif path.isdir(outputFile):
 #############################################################
 #MODIFY THIS VALUE TO IGNORE SPECIFIC PATHWAY (CAN BE EMPTY)#
 # List with ignored pathways                                #
-ignoredPathway = ['ko01100']                                #
+ignoredPathway = []                                         #
 #                                                           #
 #############################################################
 
