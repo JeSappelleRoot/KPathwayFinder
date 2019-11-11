@@ -10,8 +10,6 @@ def displayBanner():
 
 
     print(r"""
-
-
   _  _______      _   _                        ______ _           _           
  | |/ /  __ \    | | | |                      |  ____(_)         | |          
  | ' /| |__) |_ _| |_| |____      ____ _ _   _| |__   _ _ __   __| | ___ _ __ 
@@ -262,14 +260,23 @@ formatter_class=argparse.RawDescriptionHelpFormatter,
 # Add a brief description
 description="""
 KPathwayFinder is designed : \n
--from enzyme code (e.g K00001) get all pathways
--recover info about enzyme (code, name, definition)
--recover information about each pathway (code, name, class)
--concatenate each pathway for each enzyme (enzyme1 : pathway1, pathway2, pathway3...)
+- from enzyme code (e.g K00001) get all pathways
+- recover info about enzyme (code, name, definition)
+- recover information about each pathway (code, name, class)
+- concatenate each pathway for each enzyme (enzyme1 : pathway1, pathway2, pathway3...)
+- format a previous CSV file, which contains informations about enzymes and pathways
 """
 )
 
-# Add arguments for command lin
+# Add arguments for command line
+
+#mode = parser.add_mutually_exclusive_group()
+
+#mode.add_argument('--search', help='Search pathways for enzymes (default mode)', action='store_true', default=True)
+#mode.add_argument('--format-file', help='Format only single file as CSV type', action='store_true', default=False)
+
+parser.add_argument('mode', help='Choose mode between search/format-only', choices=['search', 'format-only'])
+parser.add_argument('--file', help='Specify the file to format (format mode only)')
 parser.add_argument('--input', help='The input file, which contain enzyme codes', required=True)
 parser.add_argument('--output', help='The output file, in CSV style (comma separated)', required=True)
 parser.add_argument('-v', help='Increase verbosity', action='store_true', default=False)
