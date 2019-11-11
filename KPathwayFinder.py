@@ -176,8 +176,9 @@ def pathwayInfo(code):
 
 
 def makeCSVHeader(n):
+    
 # Function to concantenate pathway to make a CSV header file
-    print(f"\n[+] Prepare CSV header for maximum {n} pathway\n")
+    print(f"\n[+] Prepare CSV header for maximum {n} pathways\n")
     # Define a prefix for the enzyme (code, name and definition)
     headerPrefix = 'enzyme_code,enzyme_name,enzyme_definition'
     # Empty header suffix
@@ -188,6 +189,9 @@ def makeCSVHeader(n):
 
     # Format the final header
     csvHeader = f"{headerPrefix},{headerSuffix}"
+
+    # [:-1] to remove last comma
+    csvHeader = csvHeader[:-1]
 
     return csvHeader
 
@@ -301,7 +305,9 @@ try:
 #
 
     # Open file in append mode and write row with CSV module
-    with  open(outputFile, 'a') as fileStream:
+    with open(outputFile, 'w') as fileStream:
+        # Define max lengh to 0
+        nbRows = 0
 
         for enzyme in sourceList:
             # Get info about the enzyme
@@ -314,12 +320,15 @@ try:
                 dictStat['LIST_FAILED_ENZYME'].append(enzyme)
             # Write row, comma separated to output file
             else:
+                # If lengh of list is greater than maxLengh (used later to make CSV header)
+                if len(sum(aboutEnzyme,[])) > nbRows:
+                    nbRows = len(sum(aboutEnzyme,[]))
+
                 # sum aboutEnzyme list, and separate each item by comma
                 row = ','.join(sum(aboutEnzyme,[]))
                 # Define a writter (comma separated) and write row
                 writer = csv.writer(fileStream, delimiter=',')
                 writer.writerow(sum(aboutEnzyme, []))
-
 
 # In case of CTRL+C, exit the script without writting
 except KeyboardInterrupt:
@@ -329,7 +338,25 @@ except KeyboardInterrupt:
     exit()
 
 
+# Get content of output file in read mode
+with open(outputFile, 'r') as fileStream:
+    contentFile = fileStream.read()
 
+# maximum lengh of header
+# // 3 each pathway have 3 elements (code, name and class)
+# - 1 to exclude 1 empty loop in range() 
+maxLengh = (nbRows // 3) - 1
+csvHeader = makeCSVHeader(maxLengh)
+
+# Finally open output file in write mode (overwrite)
+with open(outputFile, 'w') as fileStream:
+    # Add CSV header
+    fileStream.write(f"{csvHeader}\n")
+    # Add content of previous output file
+    fileStream.writelines(contentFile)
+
+
+# Add current time in stats
 dictStat['END_TIME'] = timeit.default_timer()
 # Total time of execution, with 2 decimals
 totalTime = round(dictStat['END_TIME'] - dictStat['START_TIME'], 2)
