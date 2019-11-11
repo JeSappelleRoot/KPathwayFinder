@@ -195,6 +195,60 @@ def makeCSVHeader(n):
 
     return csvHeader
 
+# -------------------------------------------------------------------------------------------------
+
+def formatCsv(file):
+# Function to properly format CSV file, with :
+# - CSV header
+# - replace missings values (blank cells) by NA
+
+    # Set maxLenght default value to 0
+    maxLenght = 0
+
+    # Read output file given in argument
+    with open(file, 'r') as fileStream:
+        fileContent = fileStream.read().splitlines()
+
+    # Get max number of line lenght
+    for line in fileContent:
+        lineLenght = len(str(line).split(','))
+        if lineLenght > maxLenght:
+            maxLenght = lineLenght
+
+    # // 3 each pathway have 3 elements (code, name and class)
+    # - 1 to exclude 1 empty loop in range() 
+    nbColumns = (maxLenght // 3) - 1
+    # Make CSV header
+    fileHeader = makeCSVHeader(nbColumns)
+
+    # Open output file in write mode and define a CSV writter
+    with open(outputFile, 'w') as fileStream:
+        writer = csv.writer(fileStream, delimiter=',')
+        # Add CSV header (with split on comma, because writer want a list)
+        writer.writerow(fileHeader.split(','))
+
+        # Get the number of missings values in file per line
+        for line in fileContent:
+            # Get line lenght
+            lineLenght = len(str(line).split(','))
+            
+            # If line is shorter than the max lenght
+            if lineLenght < maxLenght:
+                # Get the total number of missings values
+                nbMissingValues = maxLenght - lineLenght
+                # Concatenate NA for missings values
+                neededValues = ',NA' * nbMissingValues
+                newLine = line + neededValues
+            else:
+                newLine = line
+            # Finally write new line with CSV writer
+            writer.writerow(newLine.split(','))
+
+    return 
+
+
+
+
 
 
 # -------------------------------------------------------------------------------------------------
@@ -339,7 +393,6 @@ try:
                 writer.writerow(sum(aboutEnzyme, []))
 
 
-
 # In case of CTRL+C, exit the script without writting
 except KeyboardInterrupt:
     print("\n[-] KEGG research aborted")
@@ -348,27 +401,15 @@ except KeyboardInterrupt:
     exit()
 
 # Check if output file already exist, in case of deletion
-if path.isfile(outputFile):
-    # Get content of output file in read mode
-    with open(outputFile, 'r') as fileStream:
-        contentFile = fileStream.read()
-else:
+if not path.isfile(outputFile):
     print(f"\n[!] Output file is missing")
     print(f"[!] Try to do not suppress it during script execution")
     exit()
 
-# maximum lengh of header
-# // 3 each pathway have 3 elements (code, name and class)
-# - 1 to exclude 1 empty loop in range() 
-maxLengh = (nbRows // 3) - 1
-csvHeader = makeCSVHeader(maxLengh)
 
-# Finally open output file in write mode (overwrite)
-with open(outputFile, 'w') as fileStream:
-    # Add CSV header
-    fileStream.write(f"{csvHeader}\n")
-    # Add content of previous output file
-    fileStream.writelines(contentFile)
+# Finally call formatCSV function
+formatCsv(outputFile)
+
 
 
 # Add current time in stats
