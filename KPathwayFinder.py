@@ -306,10 +306,18 @@ try:
 
     # Open file in append mode and write row with CSV module
     with open(outputFile, 'w') as fileStream:
-        # Define max lengh to 0
+        # Define max lengh to 0 (used later to define CSV header lengh)
         nbRows = 0
 
         for enzyme in sourceList:
+
+            # Check if file is not missing (in case of user suppression)
+            if not path.isfile(outputFile):
+                print(f"\n[!] Output file is missing")
+                print(f"[!] Try to do not suppress it during script execution")
+                exit()
+
+
             # Get info about the enzyme
             aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, dictStat, v)
             # If the function return False, the KEGG request is not valid and pass at the other enzyme
@@ -330,10 +338,12 @@ try:
                 writer = csv.writer(fileStream, delimiter=',')
                 writer.writerow(sum(aboutEnzyme, []))
 
+
+
 # In case of CTRL+C, exit the script without writting
 except KeyboardInterrupt:
     print("\n[-] KEGG research aborted")
-    print("[-] Nothing written\n")
+    print(f"[-] Temporary results written in {outputFile}\n")
     print("bye.")
     exit()
 
