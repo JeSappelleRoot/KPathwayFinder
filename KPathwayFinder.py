@@ -420,6 +420,7 @@ elif mode == 'search':
         # Finally call formatCSV function
         # Give input and output file in argument
         # In case of search mode, both files are sames to overwrite content
+        # ... not very fancy method :(
         formatCsv(outputFile, outputFile)
 
 
