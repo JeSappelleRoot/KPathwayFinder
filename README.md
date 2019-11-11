@@ -100,6 +100,7 @@ It will looks like :
 |--------|-----------|------------------------------------------|---------|------------------------------------------|-------------------------------------|---------|---------------------------------------|-------------------------------------|---------|---------------------------------------------|-------------------------------------|
 | K00012 | UGDH; ugd | UDPglucose 6-dehydrogenase [EC:1.1.1.22] | ko00040 | Pentose and glucuronate interconversions | Metabolism; Carbohydrate metabolism | ko00053 | Ascorbate and aldarate metabolism     | Metabolism; Carbohydrate metabolism | ko00520 | Amino sugar and nucleotide sugar metabolism | Metabolism; Carbohydrate metabolism |
 | K00013 | hisD      | histidinol dehydrogenase [EC:1.1.1.23]   | ko00340 | Histidine metabolism                     | Metabolism; Amino acid metabolism   | ko01110 | Biosynthesis of secondary metabolites | NA                                  | ko01230 | Biosynthesis of amino acids                 | NA                                  |
+
 *table generated on https://www.tablesgenerator.com/markdown_tables*
 
 > You can use `--mode format-only` to parse and format quickly your file (view example below)
@@ -145,6 +146,7 @@ Assume we have a non formatted file with the following content :
 | K00013 | hisD       | histidinol dehydrogenase [EC:1.1.1.23]                         | ko00340 | Histidine metabolism                     | Metabolism; Amino acid metabolism                        | ko01100 | Metabolic pathways                | NA                                                        | ko01110 | Biosynthesis of secondary metabolites       | NA                                  | ko01230 | Biosynthesis of amino acids | NA |
 | K10001 | gltI; aatJ | glutamate/aspartate transport system substrate-binding protein | ko02010 | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020 | Two-component system              | Environmental Information Processing; Signal transduction |         |                                             |                                     |         |                             |    |
 | K10002 | gltK; aatM | glutamate/aspartate transport system permease protein          | ko02010 | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020 | Two-component system              | Environmental Information Processing; Signal transduction |         |                                             |                                     |         |                             |    |
+
 *table generated on https://www.tablesgenerator.com/markdown_tables*
 
 `python3 KPathwayFinder.py --mode format-only --input ~/Downloads/output.csv --output ~/Downloads/formatted.csv`
@@ -173,6 +175,8 @@ After the execution of KPathwayFinder, the output file will have the following c
 | K00013      | hisD        | histidinol dehydrogenase [EC:1.1.1.23]                         | ko00340       | Histidine metabolism                     | Metabolism; Amino acid metabolism                        | ko01100       | Metabolic pathways                | NA                                                        | ko01110       | Biosynthesis of secondary metabolites       | NA                                  | ko01230       | Biosynthesis of amino acids | NA             |
 | K10001      | gltI; aatJ  | glutamate/aspartate transport system substrate-binding protein | ko02010       | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020       | Two-component system              | Environmental Information Processing; Signal transduction | NA            | NA                                          | NA                                  | NA            | NA                          | NA             |
 | K10002      | gltK; aatM  | glutamate/aspartate transport system permease protein          | ko02010       | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020       | Two-component system              | Environmental Information Processing; Signal transduction | NA            | NA                                          | NA                                  | NA            | NA                          | NA             |
+
+
 *table generated on https://www.tablesgenerator.com/markdown_tables*
 
 > Make sure you have removed all non needed comma with your favorite text editor, otherwise KPathwayFinder will considere lines like complete
