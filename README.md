@@ -78,7 +78,12 @@ You can stop the execution with `CTRL + C` keyboard combination. You will have a
 - without CSV header
 - without `NA` in empty fields (blank cell)
 
+It will looks like : 
 
+|        |           |                                          |         |                                          |                                     |         |                                       |                                     |         |                                             |                                     |
+|--------|-----------|------------------------------------------|---------|------------------------------------------|-------------------------------------|---------|---------------------------------------|-------------------------------------|---------|---------------------------------------------|-------------------------------------|
+| K00012 | UGDH; ugd | UDPglucose 6-dehydrogenase [EC:1.1.1.22] | ko00040 | Pentose and glucuronate interconversions | Metabolism; Carbohydrate metabolism | ko00053 | Ascorbate and aldarate metabolism     | Metabolism; Carbohydrate metabolism | ko00520 | Amino sugar and nucleotide sugar metabolism | Metabolism; Carbohydrate metabolism |
+| K00013 | hisD      | histidinol dehydrogenase [EC:1.1.1.23]   | ko00340 | Histidine metabolism                     | Metabolism; Amino acid metabolism   | ko01110 | Biosynthesis of secondary metabolites | NA                                  | ko01230 | Biosynthesis of amino acids                 | NA                                  |
 
 
 # Exclude manually some pathways
