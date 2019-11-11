@@ -32,6 +32,7 @@ def displayBanner():
 
 
 
+
 def enzymeInfo(code, ignored,stats, verbosity):
 # Function to get info about an enzyme, from the code
 # This function return a double list
@@ -86,6 +87,9 @@ def enzymeInfo(code, ignored,stats, verbosity):
             # - suffix list (info about each enzyme's pathways)
             finalList = []
 
+            # Add suffix in final list
+            finalList.append(prefixList)
+
             for pathway in pathwayList:
                 # If pathway not in ignored list
                 if pathway not in ignored:
@@ -95,8 +99,8 @@ def enzymeInfo(code, ignored,stats, verbosity):
                     # Add number of pathway for stats
                     stats['NB_PATHWAY'] = stats['NB_PATHWAY'] + 1
 
-                    # Create finalList to concatene prefix and suffix
-                    finalList.append(prefixList + suffixList)
+                    # Add suffix of pathway in final list
+                    finalList.append(suffixList)
 
                 # If enzyme have only 1 pathway and this pathway is in ignored list
                 # Bad luck ! 
@@ -107,9 +111,9 @@ def enzymeInfo(code, ignored,stats, verbosity):
                     stats['ENZYME_ONLY_IGNORED_PATHWAY'] = stats['ENZYME_ONLY_IGNORED_PATHWAY'] + 1
                     stats['LIST_ENZYME_ONLY_IGNORED_PATHWAY'].append(code)
                     # Artificially create pathway entry, but empty 
-                    suffixList = ['>', 'NA']
-                    # Create finalList to concatene prefix and suffix
-                    finalList.append(prefixList + suffixList)
+                    suffixList = ['NA']
+                    # Add suffix of pathway in final list
+                    finalList.append(suffixList)
 
                 else:
                     print(f"  [!] Ignored pathway : {pathway}")
@@ -125,9 +129,9 @@ def enzymeInfo(code, ignored,stats, verbosity):
             stats['MISSING_PATHWAY_IN_KEGG'] = stats['MISSING_PATHWAY_IN_KEGG'] + 1
             stats['LIST_MISSING_PATHWAY_IN_KEGG'].append(code)
             # Artificially create pathway entry, but empty 
-            suffixList = ['>', 'NA']
-            # Create finalList to concatene prefix and suffix
-            finalList.append(prefixList + suffixList)
+            suffixList = ['NA']
+            # Add suffix of pathway in final list
+            finalList.append(suffixList)
 
 
         return finalList
@@ -138,11 +142,6 @@ def enzymeInfo(code, ignored,stats, verbosity):
 
 def pathwayInfo(code):
 # Function to get info about a pathway, from the code
-
-    # Symbol to separate enzyme properties (code, name, definition) to the pathway part
-    # Used at the end, when formatting enzyme_properties, pathway1, pathway2, pathway3...pathwayN
-    pathwaySeparator = '>'
-
 
     # Intialize searcher
     kSearcher = KEGG()
@@ -155,9 +154,6 @@ def pathwayInfo(code):
 
     # Initialize an empty list
     pathwayList = []
-
-    # Add separator
-    pathwayList.append(pathwaySeparator)
 
     # If name exist as a key in dictionnary, else 'NA' insted
     pathwayList.append(code)
@@ -296,29 +292,34 @@ sourceList = list(filter(None, sourceList))
 # Add total number of enzymes in stats
 dictStat['NB_ENZYME'] = len(sourceList)
 
-# Initialize the main list, wich contains other list about enzyme + pathways
-enzymeList = []
 
 # Main try to detect properly CTRL+C
 try:
 
 #
-# Main loop to get all required info about combo enzyme + pathway N
+# Main loop to get all required info about combo enzyme + pathway
 #
-    for enzyme in sourceList:
-        # Get info about the enzyme
-        aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, dictStat, v)
-        # If the function return False, the KEGG request is not valid and pass at the other enzyme
-        if aboutEnzyme == False:
-            print(f"  [!] Something wrong happened with enzyme {enzyme} (skipped)")
-            # Add entry for stats (increment counter and add enzyme code in list)
-            dictStat['FAILED_ENZYME'] = dictStat['FAILED_ENZYME'] + 1
-            dictStat['LIST_FAILED_ENZYME'].append(enzyme)
-            pass
-        else:
-            # Else, for each list return by the function, add these in the main list
-            for liste in aboutEnzyme:
-                enzymeList.append(liste)
+
+    # Open file in append mode and write row with CSV module
+    with  open(outputFile, 'a') as fileStream:
+
+        for enzyme in sourceList:
+            # Get info about the enzyme
+            aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, dictStat, v)
+            # If the function return False, the KEGG request is not valid and pass at the other enzyme
+            if aboutEnzyme == False:
+                print(f"  [!] Something wrong happened with enzyme {enzyme} (skipped)")
+                # Add entry for stats (increment counter and add enzyme code in list)
+                dictStat['FAILED_ENZYME'] = dictStat['FAILED_ENZYME'] + 1
+                dictStat['LIST_FAILED_ENZYME'].append(enzyme)
+            # Write row, comma separated to output file
+            else:
+                # sum aboutEnzyme list, and separate each item by comma
+                row = ','.join(sum(aboutEnzyme,[]))
+                # Define a writter (comma separated) and write row
+                writer = csv.writer(fileStream, delimiter=',')
+                writer.writerow(sum(aboutEnzyme, []))
+
 
 # In case of CTRL+C, exit the script without writting
 except KeyboardInterrupt:
@@ -326,94 +327,6 @@ except KeyboardInterrupt:
     print("[-] Nothing written\n")
     print("bye.")
     exit()
-
-#
-# Formating the main list enzymeList (double list)
-#
-
-# Initialize an empty list for each combo enzyme1 + pathwayN
-# Which contains only the enzyme code
-codeList = []
-for individualList in enzymeList:
-    codeList.append(individualList[0])
-
-# Get the maximum code occurence
-codeMax = max(codeList,key=codeList.count)
-
-# Get the number of the code in the codeList
-nbMaxOccurence = codeList.count(codeMax)
-
-# Create the header of the CSV file, with dedicated function
-# - 1 because codeMax include the enzyme code itsel (enzyme + pathwayN)
-# Need only the number of pathway (represented by a line in the list)
-csvHeader = makeCSVHeader(nbMaxOccurence)
-# Remove last comma
-csvHeader = csvHeader[:-1]
-
-#
-# Concatenate each pathway with the relative enzyme
-#
-
-# Define the last list, which contain [[enzyme], [pathway1], [pathway2], [pathwayN]] 
-masterList = []
-# Loop on the code gived by the input file
-for code in sourceList:
-    # if search about enzyme is successfull
-    if code not in dictStat['LIST_FAILED_ENZYME']:
-        print(f"[+] Merging pathways from {code} enzyme")
-    # Initialize a list with a empty value on index 0
-    tmpList = ['']
-    # Loop on list in the double list enzymeList
-    for liste in enzymeList:
-        # If enzyme code from file and enzyme code from double list match
-        if liste[0] == code:
-            # Get the index of the separator symbol
-            sepPosition = liste.index('>')
-            # First position of list always take from the begining to the separator symbol 
-            tmpList[0] = liste[0:sepPosition]
-            # And always add successively from the separator symbol to the end of the line
-            tmpList.append(liste[sepPosition + 1:])
-    # Add the temp list to the final master list
-    masterList.append(tmpList)
-
-
-#
-# Write in file in CSV style (comma separated)
-#
-
-# Add empty line in console
-print("\n")
-
-# With open statement to write into output file
-with open(outputFile, 'w') as fileStream:
-    # Specify CSV delimiter file
-    writer = csv.writer(fileStream, delimiter=',')
-    # Write CSV header (with a split)
-    writer.writerow(csvHeader.split(','))
-
-    # Get csvHeader's lenght
-    maxLenght = len(csvHeader.split(','))
-    # For each list in masterList, remove sub lists with sum
-    # and write the entire line in CSV file    
-    for liste in masterList:
-        # If a list not empty
-        if len(liste) > 1:
-            print(f"[+] Writing informations about enzyme {liste[0][0]}")
-            # If lenght of list is lower than csvHeader lenght
-            if len(sum(liste, [])) < maxLenght:
-                # Find the number of missing values
-                nbMissingValues = maxLenght - len(sum(liste, []))
-                # Add the list in the raw
-                row = sum(liste,[])
-                # And for the number of missing values
-                for i in range(nbMissingValues):
-                    # Add 'NA
-                    row.append('NA')
-            # Else, just add the entire list as a CSV row
-            else:
-                row = sum(liste,[])
-
-            writer.writerow(row)
 
 
 
@@ -457,5 +370,3 @@ with open(statFile, 'w') as fileStream:
 
 
 print(f"[?] For more information, view {statFile} file")
-
-    
