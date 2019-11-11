@@ -32,11 +32,6 @@ KPathwayFinder can be very slow due to KEGG library. For example, with a source 
 
 It's recommanded, if you have a large file of enzymes codes, to split your source file in several small files. 
 
-To detect the maximum number of pathways, KPathwayFinder have to parse all enzymes codes first, that explain what : 
-
->- **KPathwayFinder will write final file only at the end of the search**  
->- **If an error occurs during the search, the script will not write the final file**
-
 # Requirements
 
 KPathwayFinder use several python libraries : 
