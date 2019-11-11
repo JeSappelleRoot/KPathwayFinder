@@ -195,7 +195,7 @@ def makeCSVHeader(n):
 
 # -------------------------------------------------------------------------------------------------
 
-def formatCsv(file):
+def formatCsv(inputFile, outputFile):
 # Function to properly format CSV file, with :
 # - CSV header
 # - replace missings values (blank cells) by NA
@@ -204,7 +204,7 @@ def formatCsv(file):
     maxLenght = 0
 
     # Read output file given in argument
-    with open(file, 'r') as fileStream:
+    with open(inputFile, 'r') as fileStream:
         fileContent = fileStream.read().splitlines()
 
     # Get max number of line lenght
@@ -243,8 +243,6 @@ def formatCsv(file):
             writer.writerow(newLine.split(','))
 
     return 
-
-
 
 
 
@@ -306,11 +304,6 @@ elif path.isdir(outputFile):
     print(f"{outputFile}")
     exit()   
 
-elif mode == 'format-only' and not path.isfile(outputFile):
-    print(f"[!] Specified file for format-only mode doesn't exist")
-    print(f"{outputFile}")
-    exit()
-
 
 #
 # Begining of the script
@@ -346,8 +339,9 @@ dictStat = {
 # If user choose format-only mode
 if mode == 'format-only':
 
-
-    'blablabla'
+    formatCsv(inputFile, outputFile)
+    print(f"[+] Result written in {outputFile}")
+    
 
 # Elif user choose search mode
 elif mode == 'search':
@@ -424,7 +418,9 @@ elif mode == 'search':
 
     else:
         # Finally call formatCSV function
-        formatCsv(outputFile)
+        # Give input and output file in argument
+        # In case of search mode, both files are sames to overwrite content
+        formatCsv(outputFile, outputFile)
 
 
 
