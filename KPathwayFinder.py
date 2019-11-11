@@ -344,7 +344,7 @@ dictStat = {
 }
 
 # If user choose format-only mode
-if mode = 'format-only':
+if mode == 'format-only':
 
 
     'blablabla'
