@@ -132,15 +132,8 @@ K01
 [+] Get info about enzyme K01
   [!] Something wrong happened with enzyme K01 (skipped)
 
+[+] Prepare CSV header for maximum 3 pathways
 
-[+] Prepare CSV header for maximum 3 pathway
-
-[+] Merging pathways from K00012 enzyme
-[+] Merging pathways from K00013 enzyme
-
-
-[+] Writing informations about enzyme K00012
-[+] Writing informations about enzyme K00013
 ---------------------------------------------------
 
 Total time of execution : 60.82 second(s)
