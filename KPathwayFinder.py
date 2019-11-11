@@ -269,15 +269,8 @@ KPathwayFinder is designed : \n
 )
 
 # Add arguments for command line
-
-#mode = parser.add_mutually_exclusive_group()
-
-#mode.add_argument('--search', help='Search pathways for enzymes (default mode)', action='store_true', default=True)
-#mode.add_argument('--format-file', help='Format only single file as CSV type', action='store_true', default=False)
-
-parser.add_argument('mode', help='Choose mode between search/format-only', choices=['search', 'format-only'])
-parser.add_argument('--file', help='Specify the file to format (format mode only)')
-parser.add_argument('--input', help='The input file, which contain enzyme codes', required=True)
+parser.add_argument('--mode', help='Specify which mode use', choices=['search', 'format-only'], required=True)
+parser.add_argument('--input', help='The input file, which contain enzyme codes or CSV formated file', required=True)
 parser.add_argument('--output', help='The output file, in CSV style (comma separated)', required=True)
 parser.add_argument('-v', help='Increase verbosity', action='store_true', default=False)
 
@@ -291,6 +284,9 @@ if len(sys.argv) == 1:
 
 # Parse arguments
 args = parser.parse_args()
+
+# Set mode file argument
+mode = args.mode
 
 # Set input/output file argument
 inputFile = args.input
@@ -309,6 +305,11 @@ elif path.isdir(outputFile):
     print(f"[!] Output file is not valid, it refer to an existant directory : ")
     print(f"{outputFile}")
     exit()   
+
+elif mode == 'format-only' and not path.isfile(outputFile):
+    print(f"[!] Specified file for format-only mode doesn't exist")
+    print(f"{outputFile}")
+    exit()
 
 
 #
@@ -342,121 +343,129 @@ dictStat = {
 
 }
 
+# If user choose format-only mode
+if mode = 'format-only':
 
 
-# Read input file with .read().splitlines to avoid \n at end of each lines
-with open(inputFile, 'r') as fileStream:
-    sourceList = fileStream.read().splitlines()
+    'blablabla'
 
-# Remove empty string in initial list
-# Can cause an issue when merging and writting pathway at the end of script
-# Post 1046 
-# https://stackoverflow.com/questions/3845423/remove-empty-strings-from-a-list-of-strings
-sourceList = list(filter(None, sourceList))
-
-# Add total number of enzymes in stats
-dictStat['NB_ENZYME'] = len(sourceList)
+# Elif user choose search mode
+elif mode = 'search':
 
 
-# Main try to detect properly CTRL+C
-try:
+    # Read input file with .read().splitlines to avoid \n at end of each lines
+    with open(inputFile, 'r') as fileStream:
+        sourceList = fileStream.read().splitlines()
 
-#
-# Main loop to get all required info about combo enzyme + pathway
-#
+    # Remove empty string in initial list
+    # Can cause an issue when merging and writting pathway at the end of script
+    # Post 1046 
+    # https://stackoverflow.com/questions/3845423/remove-empty-strings-from-a-list-of-strings
+    sourceList = list(filter(None, sourceList))
 
-    # Open file in append mode and write row with CSV module
-    with open(outputFile, 'w') as fileStream:
-        # Define max lengh to 0 (used later to define CSV header lengh)
-        nbRows = 0
-
-        for enzyme in sourceList:
-
-            # Check if file is not missing (in case of user suppression)
-            if not path.isfile(outputFile):
-                print(f"\n[!] Output file is missing")
-                print(f"[!] Try to do not suppress it during script execution")
-                exit()
+    # Add total number of enzymes in stats
+    dictStat['NB_ENZYME'] = len(sourceList)
 
 
-            # Get info about the enzyme
-            aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, dictStat, v)
-            # If the function return False, the KEGG request is not valid and pass at the other enzyme
-            if aboutEnzyme == False:
-                print(f"  [!] Something wrong happened with enzyme {enzyme} (skipped)")
-                # Add entry for stats (increment counter and add enzyme code in list)
-                dictStat['FAILED_ENZYME'] = dictStat['FAILED_ENZYME'] + 1
-                dictStat['LIST_FAILED_ENZYME'].append(enzyme)
-            # Write row, comma separated to output file
-            else:
-                # If lengh of list is greater than maxLengh (used later to make CSV header)
-                if len(sum(aboutEnzyme,[])) > nbRows:
-                    nbRows = len(sum(aboutEnzyme,[]))
+    # Main try to detect properly CTRL+C
+    try:
 
-                # sum aboutEnzyme list, and separate each item by comma
-                row = ','.join(sum(aboutEnzyme,[]))
-                # Define a writter (comma separated) and write row
-                writer = csv.writer(fileStream, delimiter=',')
-                writer.writerow(sum(aboutEnzyme, []))
+    #
+    # Main loop to get all required info about combo enzyme + pathway
+    #
 
+        # Open file in append mode and write row with CSV module
+        with open(outputFile, 'w') as fileStream:
+            # Define max lengh to 0 (used later to define CSV header lengh)
+            nbRows = 0
 
-# In case of CTRL+C, exit the script without writting
-except KeyboardInterrupt:
-    print("\n[-] KEGG research aborted")
-    print(f"[-] Temporary results written in {outputFile}\n")
-    print("bye.")
-    exit()
+            for enzyme in sourceList:
 
-# Check if output file already exist, in case of deletion
-if not path.isfile(outputFile):
-    print(f"\n[!] Output file is missing")
-    print(f"[!] Try to do not suppress it during script execution")
-    exit()
-
-else:
-    # Finally call formatCSV function
-    formatCsv(outputFile)
+                # Check if file is not missing (in case of user suppression)
+                if not path.isfile(outputFile):
+                    print(f"\n[!] Output file is missing")
+                    print(f"[!] Try to do not suppress it during script execution")
+                    exit()
 
 
+                # Get info about the enzyme
+                aboutEnzyme = enzymeInfo(enzyme, ignoredPathway, dictStat, v)
+                # If the function return False, the KEGG request is not valid and pass at the other enzyme
+                if aboutEnzyme == False:
+                    print(f"  [!] Something wrong happened with enzyme {enzyme} (skipped)")
+                    # Add entry for stats (increment counter and add enzyme code in list)
+                    dictStat['FAILED_ENZYME'] = dictStat['FAILED_ENZYME'] + 1
+                    dictStat['LIST_FAILED_ENZYME'].append(enzyme)
+                # Write row, comma separated to output file
+                else:
+                    # If lengh of list is greater than maxLengh (used later to make CSV header)
+                    if len(sum(aboutEnzyme,[])) > nbRows:
+                        nbRows = len(sum(aboutEnzyme,[]))
 
-# Add current time in stats
-dictStat['END_TIME'] = timeit.default_timer()
-# Total time of execution, with 2 decimals
-totalTime = round(dictStat['END_TIME'] - dictStat['START_TIME'], 2)
-
-# Display statistics
-print('---------------------------------------------------\n')
+                    # sum aboutEnzyme list, and separate each item by comma
+                    row = ','.join(sum(aboutEnzyme,[]))
+                    # Define a writter (comma separated) and write row
+                    writer = csv.writer(fileStream, delimiter=',')
+                    writer.writerow(sum(aboutEnzyme, []))
 
 
-print(f"Total time of execution : {totalTime} second(s)\n")
-print(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}")
-print(f"Total number of founded pathways : {dictStat['NB_PATHWAY']}")
-print(f"Total number of failure in research about enzyme : {dictStat['FAILED_ENZYME']}")
-print(f"Total number of enzymes without pathway in KEGG db : {dictStat['MISSING_PATHWAY_IN_KEGG']}")
-print(f"Total number of enzymes having only ignored pathways : {dictStat['ENZYME_ONLY_IGNORED_PATHWAY']}")
-statFile = f"{path.dirname(outputFile)}/stats.txt"
+    # In case of CTRL+C, exit the script without writting
+    except KeyboardInterrupt:
+        print("\n[-] KEGG research aborted")
+        print(f"[-] Temporary results written in {outputFile}\n")
+        print("bye.")
+        exit()
 
-# Write stats in file, with list for details
-with open(statFile, 'w') as fileStream:
-    fileStream.write(f"Total time of execution : {totalTime} second(s)\n")
-    fileStream.write(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}\n")
-    fileStream.write(f"Total number of found pathways : {dictStat['NB_PATHWAY']}\n")
-    fileStream.write(f"Total number of failure in research about enzyme : {dictStat['FAILED_ENZYME']}\n")
-    fileStream.write(f"Total number of enzymes without pathway in KEGG db : {dictStat['MISSING_PATHWAY_IN_KEGG']}\n")
-    fileStream.write(f"Total number of enzymes having only ignored pathways : {dictStat['ENZYME_ONLY_IGNORED_PATHWAY']}\n")
+    # Check if output file already exist, in case of deletion
+    if not path.isfile(outputFile):
+        print(f"\n[!] Output file is missing")
+        print(f"[!] Try to do not suppress it during script execution")
+        exit()
 
-    # If there are failed enzymes during search
-    if dictStat['FAILED_ENZYME'] != 0:
-        fileStream.write(f"List of failed enzymes during search : \n{dictStat['LIST_FAILED_ENZYME']}\n")
-
-    # If there are enzyme with only ignored pathways (in ignoredList)
-    if dictStat['ENZYME_ONLY_IGNORED_PATHWAY'] != 0:
-        fileStream.write(f"List of enzymes only with ignored pathways :\n{dictStat['LIST_ENZYME_ONLY_IGNORED_PATHWAY']}\n")
-    
-    # If there are enzymes without pathways in KEGG db
-    if dictStat['LIST_MISSING_PATHWAY_IN_KEGG']:
-        fileStream.write(f"List of enzymes without pathways in KEGG db : \n{dictStat['LIST_MISSING_PATHWAY_IN_KEGG']}\n")
+    else:
+        # Finally call formatCSV function
+        formatCsv(outputFile)
 
 
 
-print(f"[?] For more information, view {statFile} file")
+    # Add current time in stats
+    dictStat['END_TIME'] = timeit.default_timer()
+    # Total time of execution, with 2 decimals
+    totalTime = round(dictStat['END_TIME'] - dictStat['START_TIME'], 2)
+
+    # Display statistics
+    print('---------------------------------------------------\n')
+
+
+    print(f"Total time of execution : {totalTime} second(s)\n")
+    print(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}")
+    print(f"Total number of founded pathways : {dictStat['NB_PATHWAY']}")
+    print(f"Total number of failure in research about enzyme : {dictStat['FAILED_ENZYME']}")
+    print(f"Total number of enzymes without pathway in KEGG db : {dictStat['MISSING_PATHWAY_IN_KEGG']}")
+    print(f"Total number of enzymes having only ignored pathways : {dictStat['ENZYME_ONLY_IGNORED_PATHWAY']}")
+    statFile = f"{path.dirname(outputFile)}/stats.txt"
+
+    # Write stats in file, with list for details
+    with open(statFile, 'w') as fileStream:
+        fileStream.write(f"Total time of execution : {totalTime} second(s)\n")
+        fileStream.write(f"Total number of enzymes parsed : {dictStat['NB_ENZYME']}\n")
+        fileStream.write(f"Total number of found pathways : {dictStat['NB_PATHWAY']}\n")
+        fileStream.write(f"Total number of failure in research about enzyme : {dictStat['FAILED_ENZYME']}\n")
+        fileStream.write(f"Total number of enzymes without pathway in KEGG db : {dictStat['MISSING_PATHWAY_IN_KEGG']}\n")
+        fileStream.write(f"Total number of enzymes having only ignored pathways : {dictStat['ENZYME_ONLY_IGNORED_PATHWAY']}\n")
+
+        # If there are failed enzymes during search
+        if dictStat['FAILED_ENZYME'] != 0:
+            fileStream.write(f"List of failed enzymes during search : \n{dictStat['LIST_FAILED_ENZYME']}\n")
+
+        # If there are enzyme with only ignored pathways (in ignoredList)
+        if dictStat['ENZYME_ONLY_IGNORED_PATHWAY'] != 0:
+            fileStream.write(f"List of enzymes only with ignored pathways :\n{dictStat['LIST_ENZYME_ONLY_IGNORED_PATHWAY']}\n")
+        
+        # If there are enzymes without pathways in KEGG db
+        if dictStat['LIST_MISSING_PATHWAY_IN_KEGG']:
+            fileStream.write(f"List of enzymes without pathways in KEGG db : \n{dictStat['LIST_MISSING_PATHWAY_IN_KEGG']}\n")
+
+
+
+    print(f"[?] For more information, view {statFile} file")
