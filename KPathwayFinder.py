@@ -347,10 +347,15 @@ except KeyboardInterrupt:
     print("bye.")
     exit()
 
-
-# Get content of output file in read mode
-with open(outputFile, 'r') as fileStream:
-    contentFile = fileStream.read()
+# Check if output file already exist, in case of deletion
+if path.isfile(outputFile):
+    # Get content of output file in read mode
+    with open(outputFile, 'r') as fileStream:
+        contentFile = fileStream.read()
+else:
+    print(f"\n[!] Output file is missing")
+    print(f"[!] Try to do not suppress it during script execution")
+    exit()
 
 # maximum lengh of header
 # // 3 each pathway have 3 elements (code, name and class)
