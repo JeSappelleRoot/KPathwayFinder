@@ -6,6 +6,7 @@
 - [Requirements](#requirements)
   - [Requirement file](#requirement-file)
 - [About output file](#about-output-file)
+  - [During script execution](#during-script-execution)
 - [Exclude manually some pathways](#exclude-manually-some-pathways)
 - [Example](#example)
   - [Command line](#command-line)
@@ -69,6 +70,15 @@ The separator in the CSV file will be a comma.
 In case of multiple values in a field (enzyme name or pathway class most of the time), values are separated by semi-colon inside the field.  
 
 > View output-example.csv file
+
+## During script execution
+
+KPathwayFinder will write enzyme and all associated pathways progressively.  
+You can stop the execution with `CTRL + C` keyboard combination. You will have a CSV file non formated :  
+- without CSV header
+- without `NA` in empty fields (blank cell)
+
+
 
 
 # Exclude manually some pathways
