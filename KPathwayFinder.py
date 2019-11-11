@@ -406,9 +406,9 @@ if not path.isfile(outputFile):
     print(f"[!] Try to do not suppress it during script execution")
     exit()
 
-
-# Finally call formatCSV function
-formatCsv(outputFile)
+else:
+    # Finally call formatCSV function
+    formatCsv(outputFile)
 
 
 
