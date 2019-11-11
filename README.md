@@ -168,7 +168,8 @@ Assume we have a non formatted file with the following content :
 [+] Result written in ~/Downloads/test.csv
 ```
 
-After the execution of KPathwayFinder, the output file will have the following content : 
+After the execution of KPathwayFinder, the output file will have the following content :   
+
 | enzyme_code | enzyme_name | enzyme_definition                                              | pathway1_code | pathway1_name                            | pathway1_class                                           | pathway2_code | pathway2_name                     | pathway2_class                                            | pathway3_code | pathway3_name                               | pathway3_class                      | pathway4_code | pathway4_name               | pathway4_class |
 |-------------|-------------|----------------------------------------------------------------|---------------|------------------------------------------|----------------------------------------------------------|---------------|-----------------------------------|-----------------------------------------------------------|---------------|---------------------------------------------|-------------------------------------|---------------|-----------------------------|----------------|
 | K00012      | UGDH; ugd   | UDPglucose 6-dehydrogenase [EC:1.1.1.22]                       | ko00040       | Pentose and glucuronate interconversions | Metabolism; Carbohydrate metabolism                      | ko00053       | Ascorbate and aldarate metabolism | Metabolism; Carbohydrate metabolism                       | ko00520       | Amino sugar and nucleotide sugar metabolism | Metabolism; Carbohydrate metabolism | ko01100       | Metabolic pathways          | NA             |
