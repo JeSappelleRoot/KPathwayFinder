@@ -73,7 +73,7 @@ In case of multiple values in a field (enzyme name or pathway class most of the 
 
 ## During script execution
 
-KPathwayFinder will write enzyme and all associated pathways progressively.  
+KPathwayFinder will write enzyme and all associated pathways progressively in specified output file.  
 You can stop the execution with `CTRL + C` keyboard combination. You will have a CSV file non formated :  
 - without CSV header
 - without `NA` in empty fields (blank cell)
