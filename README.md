@@ -6,10 +6,12 @@
 - [Requirements](#requirements)
   - [Requirement file](#requirement-file)
 - [About output file](#about-output-file)
+  - [About modes](#about-modes)
   - [During script execution](#during-script-execution)
 - [Exclude manually some pathways](#exclude-manually-some-pathways)
 - [Example](#example)
-  - [Command line](#command-line)
+  - [Format-only mode command line](#format-only-mode-command-line)
+  - [Search mode command line](#search-mode-command-line)
   - [Statistics reporting in file](#statistics-reporting-in-file)
 - [Informations retrieved from KEGG](#informations-retrieved-from-kegg)
 - [Verbose mode](#verbose-mode)
@@ -71,6 +73,19 @@ In case of multiple values in a field (enzyme name or pathway class most of the 
 
 > View output-example.csv file
 
+## About modes
+
+KPathwayFinder can be used in 2 differents modes : 
+- `--mode search`, to find pathways in KEGG database
+- `--mode format-only`, to format an existing file, craft from scratch or resulting from a previsous KPathwayFinder execution
+
+>format-only mode assume your file :
+> - fields are comma separated
+> - there are 3 enzymes fields (code, name and definition)
+> - there are 3 pathways fields (code, name and class)  
+>  - missing values will be replaced by `NA`
+
+
 ## During script execution
 
 KPathwayFinder will write enzyme and all associated pathways progressively in specified output file.  
@@ -86,9 +101,11 @@ It will looks like :
 | K00013 | hisD      | histidinol dehydrogenase [EC:1.1.1.23]   | ko00340 | Histidine metabolism                     | Metabolism; Amino acid metabolism   | ko01110 | Biosynthesis of secondary metabolites | NA                                  | ko01230 | Biosynthesis of amino acids                 | NA                                  |
 
 
+> You can use `--mode format-only` to parse and format quickly your file (view example below)
+
 # Exclude manually some pathways
 
-If you want exclude some pathways, you need to modify the script, line 263. 
+If you want exclude some pathways, you need to modify the script, line 316. 
 
 ```
 #############################################################
@@ -116,8 +133,52 @@ K01
 ```
 > `K error` and `K01` are deliberate errors for demonstration  
 
-## Command line  
-`python3 KPathwayFinder.py --input ~/Downloads/source.txt --output ~/Downloads/output.csv`
+
+## Format-only mode command line
+
+Assume we have a non formatted file with the following content : 
+
+|        |            |                                                                |         |                                          |                                                          |         |                                   |                                                           |         |                                             |                                     |         |                             |    |
+|--------|------------|----------------------------------------------------------------|---------|------------------------------------------|----------------------------------------------------------|---------|-----------------------------------|-----------------------------------------------------------|---------|---------------------------------------------|-------------------------------------|---------|-----------------------------|----|
+| K00012 | UGDH; ugd  | UDPglucose 6-dehydrogenase [EC:1.1.1.22]                       | ko00040 | Pentose and glucuronate interconversions | Metabolism; Carbohydrate metabolism                      | ko00053 | Ascorbate and aldarate metabolism | Metabolism; Carbohydrate metabolism                       | ko00520 | Amino sugar and nucleotide sugar metabolism | Metabolism; Carbohydrate metabolism | ko01100 | Metabolic pathways          | NA |
+| K00013 | hisD       | histidinol dehydrogenase [EC:1.1.1.23]                         | ko00340 | Histidine metabolism                     | Metabolism; Amino acid metabolism                        | ko01100 | Metabolic pathways                | NA                                                        | ko01110 | Biosynthesis of secondary metabolites       | NA                                  | ko01230 | Biosynthesis of amino acids | NA |
+| K10001 | gltI; aatJ | glutamate/aspartate transport system substrate-binding protein | ko02010 | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020 | Two-component system              | Environmental Information Processing; Signal transduction |         |                                             |                                     |         |                             |    |
+| K10002 | gltK; aatM | glutamate/aspartate transport system permease protein          | ko02010 | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020 | Two-component system              | Environmental Information Processing; Signal transduction |         |                                             |                                     |         |                             |    |
+
+
+`python3 KPathwayFinder.py --mode format-only --input ~/Downloads/output.csv --output ~/Downloads/formatted.csv`
+
+```
+  _  _______      _   _                        ______ _           _           
+ | |/ /  __ \    | | | |                      |  ____(_)         | |          
+ | ' /| |__) |_ _| |_| |____      ____ _ _   _| |__   _ _ __   __| | ___ _ __ 
+ |  < |  ___/ _` | __| '_ \ \ /\ / / _` | | | |  __| | | '_ \ / _` |/ _ \ '__|
+ | . \| |  | (_| | |_| | | \ V  V / (_| | |_| | |    | | | | | (_| |  __/ |   
+ |_|\_\_|   \__,_|\__|_| |_|\_/\_/ \__,_|\__, |_|    |_|_| |_|\__,_|\___|_|   
+                                          __/ |                               
+                                         |___/                                
+                              
+    
+
+[+] Prepare CSV header for maximum 3 pathways
+
+[+] Result written in ~/Downloads/test.csv
+```
+
+After the execution of KPathwayFinder, the output file will have the following content : 
+
+| enzyme_code | enzyme_name | enzyme_definition                                              | pathway1_code | pathway1_name                            | pathway1_class                                           | pathway2_code | pathway2_name                     | pathway2_class                                            | pathway3_code | pathway3_name                               | pathway3_class                      | pathway4_code | pathway4_name               | pathway4_class |
+|-------------|-------------|----------------------------------------------------------------|---------------|------------------------------------------|----------------------------------------------------------|---------------|-----------------------------------|-----------------------------------------------------------|---------------|---------------------------------------------|-------------------------------------|---------------|-----------------------------|----------------|
+| K00012      | UGDH; ugd   | UDPglucose 6-dehydrogenase [EC:1.1.1.22]                       | ko00040       | Pentose and glucuronate interconversions | Metabolism; Carbohydrate metabolism                      | ko00053       | Ascorbate and aldarate metabolism | Metabolism; Carbohydrate metabolism                       | ko00520       | Amino sugar and nucleotide sugar metabolism | Metabolism; Carbohydrate metabolism | ko01100       | Metabolic pathways          | NA             |
+| K00013      | hisD        | histidinol dehydrogenase [EC:1.1.1.23]                         | ko00340       | Histidine metabolism                     | Metabolism; Amino acid metabolism                        | ko01100       | Metabolic pathways                | NA                                                        | ko01110       | Biosynthesis of secondary metabolites       | NA                                  | ko01230       | Biosynthesis of amino acids | NA             |
+| K10001      | gltI; aatJ  | glutamate/aspartate transport system substrate-binding protein | ko02010       | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020       | Two-component system              | Environmental Information Processing; Signal transduction |               |                                             |                                     |               |                             |                |
+| K10002      | gltK; aatM  | glutamate/aspartate transport system permease protein          | ko02010       | ABC transporters                         | Environmental Information Processing; Membrane transport | ko02020       | Two-component system              | Environmental Information Processing; Signal transduction |               |                                             |                                     |               |                             |                |
+
+
+
+
+## Search mode command line
+`python3 KPathwayFinder.py --mode search --input ~/Downloads/source.txt --output ~/Downloads/output.csv`
 
 ```
 
