@@ -350,7 +350,7 @@ if mode == 'format-only':
     'blablabla'
 
 # Elif user choose search mode
-elif mode = 'search':
+elif mode == 'search':
 
 
     # Read input file with .read().splitlines to avoid \n at end of each lines
