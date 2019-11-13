@@ -16,24 +16,25 @@
 - [Informations retrieved from KEGG](#informations-retrieved-from-kegg)
 - [Verbose mode](#verbose-mode)
 
-KPathwayFinder is an automated request tool on KEGG databases (Kyoto Encyclopedia of Genes and Genomes, https://www.genome.jp/kegg/).  
+KPathwayFinder is an automated Python 3 tool on KEGG databases (Kyoto Encyclopedia of Genes and Genomes, https://www.genome.jp/kegg/).  
 From a list of KO ortholog numbers, the script returns the molecular function of the KO as it is referenced in the KEGG Orthology database, the numbers and names of the pathway(s) containing this function, as well as their classification in the BRITE functional hierarchy.
 
 >**If you encounter any bugs, please provide the command used and the source file**
 
 # How to use it
 
-KPathwayFinder is a very simple tool. You need to specify : 
+KPathwayFinder is a very simple tool. You only need to specify : 
 - `--input` argument which indicate source file, wich contains enzyme list  
 - `--output` argument which indicate output file (**.txt or .csv extension**), which will contains the result of the search about pathways  
-  
-> You can also use `-v` argument to increase verbosity of KEGG library (view [Verbose mode](#verbose-mode) section)
+
+- `--format-only` can be used to format a raw CSV file, add CSV header and `NA` for missing values (view [format-only section](#format-only-mode-command-line))
+> You can also use `-v` argument to increase verbosity of KEGG library (view [verbose mode](#verbose-mode) section)
 
 # Before use it
 
-KPathwayFinder can be very slow due to KEGG library. For example, with a source which contains 20 000 enzymes codes, **the total process of the script will take approximately 7h** (depends of your internet connection).  
+KPathwayFinder can be very slow due to KEGG library. For example, with a source filewhich contains 20 000 enzymes codes, **the total process of the script will take approximately 7h** (depends of your internet connection).  
 
-It's recommanded, if you have a large file of enzymes codes, to split your source file in several small files. 
+It's recommanded, if you have a large file of enzymes codes, to split your source file in several small files, and merge final files.
 
 # Requirements
 
@@ -49,7 +50,7 @@ KPathwayFinder use several python libraries :
 ```
 bioservices==1.6.0
 ```
-Just run `pip3 install -r requirements.txt` to install required libraries
+Just run `pip3 install -r requirements.txt` to install required librarie(s)
 
 
 # About output file
@@ -70,7 +71,7 @@ Then, the script will create fields about pathways with the maximum number of pa
 *table generated on https://www.tablesgenerator.com/markdown_tables*
 
 The separator in the CSV file will be a comma.  
-In case of multiple values in a field (enzyme name or pathway class most of the time), values are separated by semi-colon inside the field.  
+In case of multiple values in a field (enzyme name or pathway class most of the time), values will be separated by semi-colon inside the field.  
 
 > View output-example.csv file
 
@@ -78,9 +79,9 @@ In case of multiple values in a field (enzyme name or pathway class most of the 
 
 KPathwayFinder can be used in 2 differents modes : 
 - `--mode search`, to find pathways in KEGG database
-- `--mode format-only`, to format an existing file, craft from scratch or resulting from a previsous KPathwayFinder execution
+- `--mode format-only`, to format an existing file, craft from scratch or resulting from a previous partial KPathwayFinder execution
 
->format-only mode assume your file :
+>Format-only mode assume your file :
 > - fields are comma separated
 > - there are 3 enzymes fields (code, name and definition)
 > - there are 3 pathways fields (code, name and class)  
@@ -107,7 +108,7 @@ It will looks like :
 
 # Exclude manually some pathways
 
-If you want exclude some pathways, you need to modify the script, line 316. 
+If you need to exclude some pathways, you need to modify the script, line 316. 
 
 ```
 #############################################################
@@ -126,16 +127,6 @@ KPathwayFinder will automatically skip these pathways (view example below)
 
 # Example 
 
-With a source file which contains the following lines : 
-```
-K00012
-K00013
-K error
-K01
-```
-> `K error` and `K01` are deliberate errors for demonstration  
-
-
 ## Format-only mode command line
 
 Assume we have a non formatted file with the following content : 
@@ -149,7 +140,7 @@ Assume we have a non formatted file with the following content :
 
 *table generated on https://www.tablesgenerator.com/markdown_tables*
 
-`python3 KPathwayFinder.py --mode format-only --input ~/Downloads/output.csv --output ~/Downloads/formatted.csv`
+**Command line :** `python3 KPathwayFinder.py --mode format-only --input ~/Downloads/output.csv --output ~/Downloads/formatted.csv`
 
 ```
   _  _______      _   _                        ______ _           _           
@@ -182,10 +173,24 @@ After the execution of KPathwayFinder, the output file will have the following c
 
 > Make sure you have removed all non needed comma with your favorite text editor, otherwise KPathwayFinder will considere lines like complete
 
-
-
 ## Search mode command line
-`python3 KPathwayFinder.py --mode search --input ~/Downloads/source.txt --output ~/Downloads/output.csv`
+
+With a file that contains the following lines : 
+```
+K00012
+K00013
+K error
+K01
+```
+
+And, line 316 we set the script to exclude `ko01100` pathway
+
+> `K error` and `K01` are deliberate errors for demonstration  
+
+
+
+
+**Command line :** `python3 KPathwayFinder.py --mode search --input ~/Downloads/source.txt --output ~/Downloads/output.csv`
 
 ```
 
