@@ -110,7 +110,7 @@ It will looks like :
 
 If you need to exclude some pathways, you need to modify the script, line 316. 
 
-```
+```python
 #############################################################
 #MODIFY THIS VALUE TO IGNORE SPECIFIC PATHWAY (CAN BE EMPTY)#
 # List with ignored pathways                                #
