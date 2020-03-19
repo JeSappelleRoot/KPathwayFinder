@@ -440,7 +440,7 @@ elif mode == 'search':
     print(f"Total number of failure in research about enzyme : {dictStat['FAILED_ENZYME']}")
     print(f"Total number of enzymes without pathway in KEGG db : {dictStat['MISSING_PATHWAY_IN_KEGG']}")
     print(f"Total number of enzymes having only ignored pathways : {dictStat['ENZYME_ONLY_IGNORED_PATHWAY']}")
-    statFile = f"{path.dirname(outputFile)}/stats.txt"
+    statFile = f"{path.abspath(path.dirname(outputFile))}/stats.txt"
 
     # Write stats in file, with list for details
     with open(statFile, 'w') as fileStream:
