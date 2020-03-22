@@ -161,7 +161,10 @@ def pathwayInfo(code):
     # If name exist as a key in dictionnary, else 'NA' insted
     pathwayList.append(code)
     if 'NAME' in dictResult.keys():
-        pathwayList.append(dictResult['NAME'][0])
+        # If pathway name is a string comma separated, replace comma by semicolon
+        # Fix to avoid wrong column formating at the end of the script
+        nameStr = str(dictResult['NAME'][0].replace(',', ';'))
+        pathwayList.append(nameStr)
     else:
         pathwayList.append('NA')
 
