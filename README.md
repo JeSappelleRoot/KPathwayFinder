@@ -69,7 +69,7 @@ optional arguments:
 
 # Before use it
 
-KPathwayFinder can be very slow due to KEGG library. For example, with a source filewhich contains 20 000 enzymes codes, **the total process of the script will take approximately 7h** (depends of your internet connection).  
+KPathwayFinder can be very slow due to KEGG library. For example, with a source file which contains 20 000 enzymes codes, **the total process of the script will take approximately 7h** (depends of your internet connection).  
 
 It's recommanded, if you have a large file of enzymes codes, to split your source file in several small files, and merge final files.
 
@@ -107,7 +107,7 @@ Then, the script will create fields about pathways with the maximum number of pa
 
 *table generated on https://www.tablesgenerator.com/markdown_tables*
 
-The separator in the CSV file will be a comma.  
+The CSV file will be **comma separated**.  
 In case of multiple values in a field (enzyme name or pathway class most of the time), values will be separated by semi-colon inside the field.  
 
 > View output-example.csv file
