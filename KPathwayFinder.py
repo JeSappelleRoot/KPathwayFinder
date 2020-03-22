@@ -67,7 +67,10 @@ def enzymeInfo(code, ignored,stats, verbosity):
 
         # If definition is present as key, else 'NA' insted
         if 'DEFINITION' in dictResult.keys():
-            prefixList.append(dictResult['DEFINITION'])
+            # If definition is a string comma separated, replace comma by semicolon
+            # Fix to avoid wrong column formating at the end of the script
+            definitionStr = str(dictResult['DEFINITION']).replace(',',';')
+            prefixList.append(definitionStr)
         else:
             prefixList.append('NA')
 
