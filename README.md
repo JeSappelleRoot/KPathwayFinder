@@ -34,7 +34,7 @@ KPathwayFinder is a very simple tool. You only need to specify :
 ## Some help 
 
 ```
-./KPathwayFinder.py                                                                              SIGINT(2) ↵  13:10:57  170.253.179.100 
+python3 KPathwayFinder.py 
 
   _  _______      _   _                        ______ _           _           
  | |/ /  __ \    | | | |                      |  ____(_)         | |          
