@@ -121,6 +121,8 @@ def enzymeInfo(code, ignored,stats, verbosity):
 
             # Initialize an empty list
             finalList = []
+            # Add suffix in final list
+            finalList.append(prefixList)
             # Display a alert message
             print(f"[!] No pathway detected for enzyme {code}\n")
             # Increment number of failed pathway in stats and add enzyme in list
