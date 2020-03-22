@@ -2,6 +2,7 @@
 
 - [KPathwayFinder](#kpathwayfinder)
 - [How to use it](#how-to-use-it)
+  - [Some help](#some-help)
 - [Before use it](#before-use-it)
 - [Requirements](#requirements)
   - [Requirement file](#requirement-file)
@@ -29,6 +30,42 @@ KPathwayFinder is a very simple tool. You only need to specify :
 
 - `--format-only` can be used to format a raw CSV file, add CSV header and `NA` for missing values (view [format-only section](#format-only-mode-command-line))
 > You can also use `-v` argument to increase verbosity of KEGG library (view [verbose mode](#verbose-mode) section)
+
+## Some help 
+
+```
+./KPathwayFinder.py                                                                              SIGINT(2) ↵  13:10:57  170.253.179.100 
+
+  _  _______      _   _                        ______ _           _           
+ | |/ /  __ \    | | | |                      |  ____(_)         | |          
+ | ' /| |__) |_ _| |_| |____      ____ _ _   _| |__   _ _ __   __| | ___ _ __ 
+ |  < |  ___/ _` | __| '_ \ \ /\ / / _` | | | |  __| | | '_ \ / _` |/ _ \ '__|
+ | . \| |  | (_| | |_| | | \ V  V / (_| | |_| | |    | | | | | (_| |  __/ |   
+ |_|\_\_|   \__,_|\__|_| |_|\_/\_/ \__,_|\__, |_|    |_|_| |_|\__,_|\___|_|   
+                                          __/ |                               
+                                         |___/                                
+                              
+    
+usage: KPathwayFinder.py [-h] --mode {search,format-only} --input INPUT
+                         --output OUTPUT [-v]
+
+KPathwayFinder is designed : 
+
+- from enzyme code (e.g K00001) get all pathways
+- recover info about enzyme (code, name, definition)
+- recover information about each pathway (code, name, class)
+- concatenate each pathway for each enzyme (enzyme1 : pathway1, pathway2, pathway3...)
+- format a previous CSV file, which contains informations about enzymes and pathways
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --mode {search,format-only}
+                        Specify which mode use
+  --input INPUT         The input file, which contain enzyme codes or CSV
+                        formated file
+  --output OUTPUT       The output file, in CSV style (comma separated)
+  -v                    Increase verbosity
+```
 
 # Before use it
 
